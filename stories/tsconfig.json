@@ -24,8 +24,12 @@
 
     /* toggle these one for development */
     "paths": {
+      "@/*": ["../src/*"],
+      "react-three-map/components/*": ["../react-three-map/components/*"],
+      "react-three-map/lib/*": ["../react-three-map/lib/*"],
       "react-three-map": ["../src/mapbox.index.ts"],
-      "react-three-map/maplibre": ["../src/maplibre.index.ts"],
+      "react-three-map/mapbox": ["../src/mapbox.index.ts"],
+      "react-three-map/maplibre": ["../src/maplibre.index.ts"]
     }
   },
   "include": ["src"],

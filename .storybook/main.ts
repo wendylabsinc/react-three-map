@@ -21,6 +21,7 @@ const config: StorybookConfig = {
   },
   viteFinal: async (config, { configType }) => {
     const { default: path } = await import('path');
+    const { default: tailwindcss } = await import('@tailwindcss/vite');
     
     // Load environment variables from .env file
     const env = loadEnv(configType || 'development', process.cwd(), '');
@@ -30,6 +31,7 @@ const config: StorybookConfig = {
     
     return {
       ...config,
+      plugins: [...(config.plugins || []), tailwindcss()],
       define: {
         ...config.define,
         'import.meta.env.VITE_MAPBOX_TOKEN': JSON.stringify(mapboxToken),
@@ -39,6 +41,9 @@ const config: StorybookConfig = {
         ...config.resolve,
         alias: {
           ...config.resolve?.alias,
+          '@': path.resolve(__dirname, '../src'),
+          'react-three-map/components': path.resolve(__dirname, '../react-three-map/components'),
+          'react-three-map/lib': path.resolve(__dirname, '../react-three-map/lib'),
           'react-three-map/maplibre': path.resolve(__dirname, '../src/maplibre.index.ts'),
           'react-three-map/mapbox': path.resolve(__dirname, '../src/mapbox.index.ts'),
           'react-three-map': path.resolve(__dirname, '../src/maplibre.index.ts'),

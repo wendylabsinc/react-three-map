@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path';
 
 /** 0: no lib mode, 1: ES, 2: cjs */
@@ -20,13 +21,19 @@ outDir = `${outDir}/${isES ? 'es' : 'cjs'}`;
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [tailwindcss(), react()],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
   ...(!libMode
     // story mode
     ? {
       base: '',
       resolve: {
         alias: {
+          '@': resolve(__dirname, './src'),
           'react-three-map/maplibre': resolve(__dirname, './src/maplibre.index.ts'),
           'react-three-map/mapbox': resolve(__dirname, './src/mapbox.index.ts'),
           'react-three-map': resolve(__dirname, './src/mapbox.index.ts'),
