@@ -1,17 +1,19 @@
-import { RootState } from "@react-three/fiber";
+import { _roots } from "@react-three/fiber";
 import { Matrix4Tuple, PerspectiveCamera } from "three";
-import { UseBoundStore } from "zustand";
 import { MapInstance } from "../generic-map";
 import { syncCamera } from "../sync-camera";
 import { useFunction } from "../use-function";
 import { R3M } from "../use-r3m";
+
+// Use the store type from @react-three/fiber's internal _roots to avoid zustand version mismatch
+type FiberStore = NonNullable<ReturnType<typeof _roots.get>>['store'];
 
 export function useRender({
   map, origin, useThree, frameloop, r3m,
 } :{
   map: MapInstance,
   origin: Matrix4Tuple,
-  useThree: UseBoundStore<RootState>,
+  useThree: FiberStore,
   frameloop?: 'always' | 'demand',
   r3m: R3M
 }) {

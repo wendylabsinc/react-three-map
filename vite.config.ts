@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path';
 
 /** 0: no lib mode, 1: ES, 2: cjs */
@@ -21,7 +20,7 @@ outDir = `${outDir}/${isES ? 'es' : 'cjs'}`;
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(), react()],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),

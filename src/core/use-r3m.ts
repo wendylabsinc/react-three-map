@@ -1,8 +1,10 @@
-import { RootState, _roots, useThree } from "@react-three/fiber";
+import { _roots, useThree } from "@react-three/fiber";
 import { useState } from "react";
 import { Matrix4, Matrix4Tuple } from "three";
-import { UseBoundStore } from 'zustand';
 import { FromLngLat, MapInstance } from "./generic-map";
+
+// Use the store type from @react-three/fiber's internal _roots to avoid zustand version mismatch
+type FiberStore = NonNullable<ReturnType<typeof _roots.get>>['store'];
 
 export interface R3M<T extends MapInstance = MapInstance> {
   /** Map provider */
@@ -32,7 +34,7 @@ export function useInitR3M<T extends MapInstance>(props: {
 export function initR3M<T extends MapInstance>({store, ...props}: {
   map: T;
   fromLngLat: FromLngLat;
-  store: UseBoundStore<RootState>;
+  store: FiberStore;
 }) {
   const viewProjMx = new Matrix4().identity().toArray();
   const r3m : R3M<T> = { ...props, viewProjMx };

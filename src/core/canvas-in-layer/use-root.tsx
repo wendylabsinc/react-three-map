@@ -5,13 +5,22 @@ import { events } from "../events";
 import { FromLngLat, MapInstance } from "../generic-map";
 import { setCoords, useSetRootCoords } from "../use-coords";
 import { useFunction } from "../use-function";
-import { initR3M } from "../use-r3m";
+import { initR3M, R3M } from "../use-r3m";
+
+// Use the store type from @react-three/fiber's internal _roots to avoid zustand version mismatch
+type FiberStore = NonNullable<ReturnType<typeof _roots.get>>['store'];
+
+interface UseRootReturn {
+  onRemove: () => void;
+  useThree: FiberStore;
+  r3m: R3M;
+}
 
 export function useRoot(
   fromLngLat: FromLngLat,
   map: MapInstance,
   { frameloop, longitude, latitude, altitude, ...props }: CanvasProps
-) {
+): UseRootReturn {
 
   const [{ root, useThree, canvas, r3m }] = useState(() => {
     const canvas = map.getCanvas();
