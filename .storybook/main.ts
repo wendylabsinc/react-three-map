@@ -21,13 +21,13 @@ const config: StorybookConfig = {
   },
   viteFinal: async (config, { configType }) => {
     const { default: path } = await import('path');
-    
+
     // Load environment variables from .env file
     const env = loadEnv(configType || 'development', process.cwd(), '');
-    
+
     // Ensure the token is properly set
     const mapboxToken = env.VITE_MAPBOX_TOKEN || process.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWJhbGV4OTkiLCJhIjoiY2o1cGttZTJjMGJ5NDMycHFwY2h0amZieSJ9.fHqdZDfrCz6dEYTdnQ-hjQ';
-    
+
     return {
       ...config,
       define: {
@@ -39,6 +39,7 @@ const config: StorybookConfig = {
         ...config.resolve,
         alias: {
           ...config.resolve?.alias,
+          '@': path.resolve(__dirname, '../src'),
           'react-three-map/maplibre': path.resolve(__dirname, '../src/maplibre.index.ts'),
           'react-three-map/mapbox': path.resolve(__dirname, '../src/mapbox.index.ts'),
           'react-three-map': path.resolve(__dirname, '../src/maplibre.index.ts'),
