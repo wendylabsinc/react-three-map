@@ -24,12 +24,9 @@ export function CompassOverlay({
   className,
   overlay = true,
 }: CompassOverlayProps) {
-  if (!overlay) return null;
-
   const { current: map } = useMap();
   const [bearing, setBearing] = useState(0);
   const [pitch, setPitch] = useState(0);
-
   const mapRef = useRef(map);
   mapRef.current = map;
 
@@ -53,11 +50,13 @@ export function CompassOverlay({
 
   // Camera looking down from above; we keep the default up vector so screen-up aligns to world +Y.
   const camera = useMemo(() => ({
-    position: [0, 5, 0],
+    position: [0, 5, 0] as const,
     near: 0.1,
     far: 100,
     zoom: 50,
   }), []);
+
+  if (!overlay) return null;
 
   return (
     <div
@@ -70,7 +69,6 @@ export function CompassOverlay({
         width: `${size}px`,
         height: `${size}px`,
         background: 'rgba(0,0,0,0.7)',
-        borderRadius: '10px',
         padding: '8px',
         boxSizing: 'border-box',
         zIndex: 10,
