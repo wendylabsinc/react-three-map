@@ -1,3 +1,7 @@
+/**
+ * @packageDocumentation
+ * Enhanced Pivot Controls for 3D object manipulation in map space.
+ */
 import React, { createContext, useContext, useMemo, useRef, useState, useCallback } from 'react'
 import { extend, useThree, ThreeEvent } from '@react-three/fiber'
 import { 
@@ -18,23 +22,296 @@ import { Html } from '@react-three/drei'
 // Extend Three.js objects for React Three Fiber
 extend({ Group, Matrix4, Mesh, MeshBasicMaterial, TubeGeometry })
 
-interface PivotControlsProps {
+/**
+ * Props for the EnhancedPivotControls component.
+ *
+ * @example Basic usage
+ * ```tsx
+ * <EnhancedPivotControls
+ *   matrix={matrix}
+ *   scale={500}
+ *   onDrag={handleDrag}
+ *   onDragStart={handleDragStart}
+ *   onDragEnd={handleDragEnd}
+ * />
+ * ```
+ *
+ * @example Rotation only (no translation)
+ * ```tsx
+ * <EnhancedPivotControls
+ *   matrix={matrix}
+ *   scale={300}
+ *   disableTranslations
+ *   annotations
+ *   onDrag={handleDrag}
+ * />
+ * ```
+ *
+ * @example Custom appearance
+ * ```tsx
+ * <EnhancedPivotControls
+ *   matrix={matrix}
+ *   scale={400}
+ *   rotationThickness={0.08}
+ *   arrowHeadSize={0.1}
+ *   activeAxes={[true, true, false]} // Only X and Y
+ *   onDrag={handleDrag}
+ * />
+ * ```
+ */
+export interface PivotControlsProps {
+  /**
+   * The transformation matrix representing the current position, rotation, and scale.
+   * Create this from your position and rotation state.
+   *
+   * @example
+   * ```tsx
+   * const matrix = useMemo(() => {
+   *   const m = new Matrix4();
+   *   m.makeRotationFromEuler(new Euler(...rotation));
+   *   m.setPosition(...position);
+   *   return m;
+   * }, [position, rotation]);
+   * ```
+   */
   matrix?: Matrix4
+
+  /**
+   * Callback fired continuously while dragging. Receives the updated transformation matrix.
+   * Use this to update your object's position and rotation.
+   *
+   * @example
+   * ```tsx
+   * const onDrag = useCallback((m4: Matrix4) => {
+   *   // Extract position
+   *   const pos = new Vector3().setFromMatrixPosition(m4);
+   *   setPosition(pos.toArray());
+   *
+   *   // Extract rotation
+   *   const euler = new Euler().setFromRotationMatrix(m4);
+   *   setRotation([euler.x, euler.y, euler.z]);
+   * }, []);
+   * ```
+   */
   onDrag?: (matrix: Matrix4) => void
+
+  /**
+   * Callback fired when dragging starts.
+   * **Important:** Use this to disable map interactions to prevent conflicts.
+   *
+   * @example
+   * ```tsx
+   * const map = useMap();
+   *
+   * const onDragStart = useCallback(() => {
+   *   map.dragPan.disable();
+   *   map.dragRotate.disable();
+   *   map.doubleClickZoom.disable();
+   * }, [map]);
+   * ```
+   */
   onDragStart?: () => void
+
+  /**
+   * Callback fired when dragging ends.
+   * Use this to re-enable map interactions.
+   *
+   * @example
+   * ```tsx
+   * const map = useMap();
+   *
+   * const onDragEnd = useCallback(() => {
+   *   // Small delay prevents the release event from triggering map pan
+   *   setTimeout(() => {
+   *     map.dragPan.enable();
+   *     map.dragRotate.enable();
+   *     map.doubleClickZoom.enable();
+   *   }, 50);
+   * }, [map]);
+   * ```
+   */
   onDragEnd?: () => void
+
+  /**
+   * Scale factor for the control gizmo size in meters.
+   * Choose a value appropriate for your zoom level and object size.
+   *
+   * @defaultValue 1
+   *
+   * @example
+   * ```tsx
+   * // For city-level zoom (zoom 13-15), use 300-500
+   * <EnhancedPivotControls scale={500} />
+   *
+   * // For street-level zoom (zoom 17-19), use 50-100
+   * <EnhancedPivotControls scale={50} />
+   * ```
+   */
   scale?: number
+
+  /**
+   * When true, the gizmo maintains a fixed screen size regardless of zoom level.
+   * @defaultValue false
+   */
   fixed?: boolean
+
+  /**
+   * Disable translation (movement) controls.
+   * - `true`: Disable all translation axes
+   * - `false`: Enable all translation axes
+   * - `[x, y, z]`: Disable specific axes (true = disabled)
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```tsx
+   * // Disable all translations (rotation only mode)
+   * <EnhancedPivotControls disableTranslations />
+   *
+   * // Only allow horizontal movement (X and Z)
+   * <EnhancedPivotControls disableTranslations={[false, true, false]} />
+   *
+   * // Only allow vertical movement (Y axis)
+   * <EnhancedPivotControls disableTranslations={[true, false, true]} />
+   * ```
+   */
   disableTranslations?: boolean | [boolean, boolean, boolean]
+
+  /**
+   * Disable rotation controls.
+   * - `true`: Disable all rotation axes
+   * - `false`: Enable all rotation axes
+   * - `[x, y, z]`: Disable specific axes (true = disabled)
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```tsx
+   * // Disable all rotations (translation only mode)
+   * <EnhancedPivotControls disableRotations />
+   *
+   * // Only allow Y-axis rotation (turntable style)
+   * <EnhancedPivotControls disableRotations={[true, false, true]} />
+   * ```
+   */
   disableRotations?: boolean | [boolean, boolean, boolean]
+
+  /**
+   * Show angle annotations while rotating.
+   * Displays a tooltip with the rotation angle in degrees during drag operations.
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```tsx
+   * <EnhancedPivotControls annotations />
+   * ```
+   */
   annotations?: boolean
+
+  /**
+   * Control which axes are visible and interactive.
+   * Set to `[x, y, z]` where true = active.
+   *
+   * @defaultValue [true, true, true]
+   *
+   * @example
+   * ```tsx
+   * // Only show X and Z axes (horizontal plane)
+   * <EnhancedPivotControls activeAxes={[true, false, true]} />
+   *
+   * // Only show Y axis (vertical)
+   * <EnhancedPivotControls activeAxes={[false, true, false]} />
+   * ```
+   */
   activeAxes?: [boolean, boolean, boolean]
+
+  /**
+   * Thickness of the rotation ring relative to its radius.
+   * Higher values make the rings easier to click but more visually prominent.
+   *
+   * @defaultValue 0.03
+   *
+   * @example
+   * ```tsx
+   * // Thicker rings for easier interaction
+   * <EnhancedPivotControls rotationThickness={0.08} />
+   * ```
+   */
   rotationThickness?: number
+
+  /**
+   * Thickness of the translation arrow shaft relative to scale.
+   *
+   * @defaultValue 0.015
+   *
+   * @example
+   * ```tsx
+   * // Thicker arrow shafts
+   * <EnhancedPivotControls translationThickness={0.025} />
+   * ```
+   */
   translationThickness?: number
+
+  /**
+   * Size of the arrow head relative to scale.
+   *
+   * @defaultValue 0.05
+   *
+   * @example
+   * ```tsx
+   * // Larger arrow heads
+   * <EnhancedPivotControls arrowHeadSize={0.1} />
+   * ```
+   */
   arrowHeadSize?: number
+
+  /**
+   * Length of the translation arrows relative to scale.
+   *
+   * @defaultValue 1
+   *
+   * @example
+   * ```tsx
+   * // Longer arrows
+   * <EnhancedPivotControls arrowLength={1.5} />
+   * ```
+   */
   arrowLength?: number
+
+  /**
+   * Length of the arrow head relative to scale.
+   *
+   * @defaultValue 0.2
+   */
   arrowHeadLength?: number
+
+  /**
+   * Whether the control gizmo is visible.
+   * Use this to hide controls when not in edit mode.
+   *
+   * @defaultValue true
+   *
+   * @example
+   * ```tsx
+   * <EnhancedPivotControls visible={isEditMode} />
+   * ```
+   */
   visible?: boolean
+
+  /**
+   * Whether the control is interactive.
+   * When false, the gizmo is displayed but grayed out and non-interactive.
+   * Useful for showing controls for non-selected objects.
+   *
+   * @defaultValue true
+   *
+   * @example
+   * ```tsx
+   * // Only enable for selected object
+   * <EnhancedPivotControls enabled={isSelected} />
+   * ```
+   */
   enabled?: boolean
 }
 
@@ -415,6 +692,71 @@ const AxisArrow: React.FC<{
   )
 }
 
+/**
+ * A gizmo component for translating and rotating 3D objects in map space.
+ *
+ * Provides intuitive controls for manipulating objects with:
+ * - **Translation arrows** (red=X, green=Y, blue=Z) for moving objects
+ * - **Rotation rings** for rotating around each axis
+ * - **Hover highlighting** and **drag annotations**
+ *
+ * Designed to work seamlessly with MapLibre/Mapbox maps by properly handling
+ * pointer events and providing callbacks to disable map interactions during manipulation.
+ *
+ * @example
+ * ```tsx
+ * import { Canvas, EnhancedPivotControls, useMap } from 'react-three-map/maplibre';
+ * import { Matrix4, Vector3, Euler } from 'three';
+ *
+ * function DraggableObject() {
+ *   const map = useMap();
+ *   const [position, setPosition] = useState([0, 0, 0]);
+ *   const [rotation, setRotation] = useState([0, 0, 0]);
+ *
+ *   const matrix = useMemo(() => {
+ *     const m = new Matrix4();
+ *     m.makeRotationFromEuler(new Euler(...rotation));
+ *     m.setPosition(...position);
+ *     return m;
+ *   }, [position, rotation]);
+ *
+ *   const onDragStart = () => {
+ *     map.dragPan.disable();
+ *     map.dragRotate.disable();
+ *   };
+ *
+ *   const onDragEnd = () => {
+ *     map.dragPan.enable();
+ *     map.dragRotate.enable();
+ *   };
+ *
+ *   const onDrag = (m4: Matrix4) => {
+ *     setPosition(new Vector3().setFromMatrixPosition(m4).toArray());
+ *     const euler = new Euler().setFromRotationMatrix(m4);
+ *     setRotation(euler.toArray());
+ *   };
+ *
+ *   return (
+ *     <>
+ *       <EnhancedPivotControls
+ *         matrix={matrix}
+ *         scale={500}
+ *         onDragStart={onDragStart}
+ *         onDragEnd={onDragEnd}
+ *         onDrag={onDrag}
+ *         annotations
+ *       />
+ *       <mesh position={position} rotation={rotation}>
+ *         <boxGeometry args={[100, 100, 100]} />
+ *         <meshStandardMaterial color="orange" />
+ *       </mesh>
+ *     </>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link PivotControlsProps} for available configuration options
+ */
 export const EnhancedPivotControls: React.FC<PivotControlsProps> = ({
   matrix = new Matrix4(),
   onDrag,

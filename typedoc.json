@@ -1,0 +1,31 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/mapbox.index.ts", "./src/maplibre.index.ts"],
+  "out": "./docs",
+  "name": "React Three Map",
+  "readme": "./README.md",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "excludeInternal": true,
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "categorizeByGroup": true,
+  "sort": ["source-order"],
+  "plugin": [],
+  "tsconfig": "./tsconfig.app.json",
+  "highlightLanguages": ["ts", "tsx", "jsx", "javascript", "typescript", "json", "bash", "sh"],
+  "projectDocuments": [
+    "./docs-src/getting-started.md",
+    "./docs-src/multiple-locations.md",
+    "./docs-src/interacting-with-map.md",
+    "./docs-src/pivot-controls.md"
+  ],
+  "navigationLinks": {
+    "Storybook": "https://wendylabsinc.github.io/react-three-map/storybook/",
+    "GitHub": "https://github.com/wendylabsinc/react-three-map"
+  }
+}

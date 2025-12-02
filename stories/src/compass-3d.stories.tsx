@@ -1,13 +1,14 @@
 // Removed unused import
 import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useMap } from "react-map-gl/maplibre";
-import { Compass3D } from "../../src/compass-3d";
+import { Compass3D } from "react-three-map";
+import { CompassOverlay } from "../../src/components/compass-overlay";
 import { StoryMap } from "./story-map-storybook";
 
 // Component to sync compass rotation with map camera
-function MapCompass() {
+function MapCompass({ overlay }: { overlay?: boolean }) {
   const { current: map } = useMap();
   const [bearing, setBearing] = useState(0);
   const [pitch, setPitch] = useState(0);
@@ -78,9 +79,11 @@ function MapCompass() {
           cylinderLength={cylinderLength}
           cylinderRadius={cylinderRadius}
           sphereRadius={sphereRadius}
-          bearing={bearing}
-          pitch={pitch}
+          bearing={overlay ? undefined : bearing}
+          pitch={overlay ? undefined : pitch}
           scale={compassScale}
+          overlay={overlay}
+          syncWithCamera={overlay}
         />
         
         {/* Add axes helper for debugging */}
@@ -226,9 +229,9 @@ export function TerrainWith3DCompass() {
         bearing={0}
         maplibreStyle={maplibreStyle}
         mapboxStyle={mapboxStyle}
-        mapChildren={<MapCompass />}
+        mapChildren={<CompassOverlay />}
       >
-        {/* No 3D objects in the scene, just the terrain */}
+        {/* No other 3D objects in the scene, just the terrain */}
       </StoryMap>
     </div>
   );
@@ -273,6 +276,9 @@ export function Compass3DStandalone() {
           bearing={bearing}
           pitch={pitch}
           scale={scale}
+          overlay={false}
+          syncWithCamera={false}
+          disableGizmoHelper
         />
         <gridHelper args={[10, 10]} />
         <axesHelper args={[5]} />

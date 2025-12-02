@@ -3,7 +3,7 @@ import { useControls } from "leva";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useMap } from "react-three-map";
 import { Euler, Matrix4, Vector3, Vector3Tuple } from "three";
-import { EnhancedPivotControls } from "./EnhancedPivotControls";
+import { EnhancedPivotControls } from "react-three-map";
 import { StoryMap } from "./story-map-storybook";
 
 // Back to Big Sur coordinates - AWS terrain tiles have global coverage

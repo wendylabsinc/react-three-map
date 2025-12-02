@@ -15,7 +15,7 @@ Until now you had:
 | Maplibre/Mapbox | react-map-gl        |
 | THREE.js        | react-three-fiber   |
 
-Now with `@edgeengineer/react-three-map`, you can use them together :fist_right::star::fist_left:.
+Now with `@edgeengineer/react-three-map`, you can use them together.
 
 ## About This Fork
 
@@ -23,23 +23,23 @@ Now with `@edgeengineer/react-three-map`, you can use them together :fist_right:
 - Because of this direction, we expect this fork to diverge rapidly from the original API and scope. We’ll strive to keep the surface area stable where possible, but new editor features will take priority.
 - Tremendous credit to [RodrigoHamuy](https://github.com/RodrigoHamuy) for the original project and its elegant architecture. This work stands on top of his foundations; please consider supporting the upstream project.
 
-## ✨ New Features in this Fork
+## New Features in this Fork
 
-- **🎮 Custom Pivot Controls** - Enhanced interaction controls for 3D objects in map space
-- **🌍 Extensive GIS Utilities** - Professional-grade geospatial tools and calculations
-- **📊 Advanced Coordinate Systems** - Extended support for various GIS coordinate projections
-- **🛠️ Enhanced Developer Tools** - Improved debugging and development experience
-- **⚡ Performance Optimizations** - Optimized for large-scale GIS applications
+- **Custom Pivot Controls** - Enhanced interaction controls for 3D objects in map space
+- **Extensive GIS Utilities** - Professional-grade geospatial tools and calculations
+- **Advanced Coordinate Systems** - Extended support for various GIS coordinate projections
+- **Enhanced Developer Tools** - Improved debugging and development experience
+- **Performance Optimizations** - Optimized for large-scale GIS applications
 
 ```sh
 npm install @edgeengineer/react-three-map
 ```
 
 - [React Three Map](#react-three-map)
-  - [:book: Examples](#book-examples)
-  - [:mag: What does it look like?](#mag-what-does-it-look-like)
-  - [:thinking: Why we build this?](#thinking-why-we-build-this)
-  - [:gear: API](#gear-api)
+  - [Examples](#examples)
+  - [What does it look like?](#what-does-it-look-like)
+  - [Why we build this?](#why-we-build-this)
+  - [API](#api)
     - [Canvas](#canvas)
       - [Render Props](#render-props)
       - [Render Props removed from `@react-three/fiber`](#render-props-removed-from-react-threefiber)
@@ -50,11 +50,11 @@ npm install @edgeengineer/react-three-map
     - [vector3ToCoords](#vector3tocoords)
 
 
-## :book: Examples
+## Examples
 
 Check out our examples [here](https://edgeengineer.github.io/react-three-map) (powered by [Storybook](https://storybook.js.org/)).
 
-## :mag: What does it look like?
+## What does it look like?
 
 
 <table>
@@ -111,7 +111,7 @@ function BasicExample() {
 }
 ```
 
-## :thinking: Why we build this?
+## Why we build this?
 
 Look [how complex](https://maplibre.org/maplibre-gl-js-docs/example/add-3d-model/) is to add just one ThreeJS object to a map.
 
@@ -119,7 +119,7 @@ Look [how complex](https://docs.pmnd.rs/react-three-fiber/api/canvas#createroot)
 
 You can now replace all that complexity and hundreds of lines of code with the `<Canvas>` component exported by `react-three-map`, which includes a tone of extra features and seamless integration, supporting pointer events, raycasting, and much more, all out of the box.
 
-## :gear: API
+## API
 
 ### Canvas
 
@@ -265,7 +265,7 @@ Recommended to use at city level distances, but margin errors will be noticeable
 
 Returns a `Coords` object representing the geographic coordinates of the point relative to the origin.
 
-## :rocket: Development
+## Development
 
 To run the examples locally:
 
@@ -284,7 +284,7 @@ npm run build:storybook
 
 The Storybook will be available at `http://localhost:6006`.
 
-## 🚀 GitHub Pages Deployment
+## GitHub Pages Deployment
 
 The project is configured to automatically deploy Storybook to GitHub Pages when changes are pushed to the `main` branch.
 
