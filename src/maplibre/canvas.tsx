@@ -16,16 +16,56 @@ extend(THREE);
 
 const fromLngLat = MercatorCoordinate.fromLngLat
 
-/** `react-three-fiber` canvas inside `MapLibre` */
+/**
+ * A React Three Fiber canvas that renders inside a MapLibre map.
+ *
+ * This component bridges `@react-three/fiber` with `react-map-gl` (MapLibre variant),
+ * allowing you to render Three.js scenes at geographic coordinates on the map.
+ *
+ * Must be used as a child of a `Map` component from `react-map-gl/maplibre`.
+ *
+ * @example
+ * ```tsx
+ * import "maplibre-gl/dist/maplibre-gl.css";
+ * import Map from "react-map-gl/maplibre";
+ * import { Canvas } from "react-three-map/maplibre";
+ *
+ * function App() {
+ *   return (
+ *     <Map
+ *       initialViewState={{
+ *         latitude: 51.5074,
+ *         longitude: -0.1278,
+ *         zoom: 15,
+ *         pitch: 60
+ *       }}
+ *       mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+ *     >
+ *       <Canvas latitude={51.5074} longitude={-0.1278}>
+ *         <ambientLight intensity={0.5} />
+ *         <mesh>
+ *           <boxGeometry args={[100, 100, 100]} />
+ *           <meshStandardMaterial color="hotpink" />
+ *         </mesh>
+ *       </Canvas>
+ *     </Map>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link CanvasProps} for available props
+ * @see {@link Coordinates} for placing objects at different locations
+ * @see {@link useMap} for accessing the MapLibre map instance
+ */
 export const Canvas = memo<CanvasProps>(({ overlay, ...props }) => {
 
   const mapRef = useMap();
-  
+
   if (!mapRef.current) {
     console.error('Canvas must be used within a Map component from react-map-gl');
     return null;
   }
-  
+
   const map = mapRef.current.getMap();
 
   return <>
@@ -64,4 +104,4 @@ const CanvasOverlay = memo<CanvasPropsAndMap>(({ map, id, beforeId, ...props }) 
     />
   </>
 })
-CanvasInLayer.displayName = 'CanvasInLayer';
+CanvasOverlay.displayName = 'CanvasOverlay';

@@ -16,16 +16,57 @@ extend(THREE);
 
 const fromLngLat = MercatorCoordinate.fromLngLat
 
-/** `react-three-fiber` canvas inside `Mapbox` */
+/**
+ * A React Three Fiber canvas that renders inside a Mapbox map.
+ *
+ * This component bridges `@react-three/fiber` with `react-map-gl` (Mapbox variant),
+ * allowing you to render Three.js scenes at geographic coordinates on the map.
+ *
+ * Must be used as a child of a `Map` component from `react-map-gl/mapbox`.
+ *
+ * @example
+ * ```tsx
+ * import "mapbox-gl/dist/mapbox-gl.css";
+ * import Map from "react-map-gl/mapbox";
+ * import { Canvas } from "react-three-map";
+ *
+ * function App() {
+ *   return (
+ *     <Map
+ *       mapboxAccessToken="YOUR_TOKEN"
+ *       initialViewState={{
+ *         latitude: 40.7128,
+ *         longitude: -74.006,
+ *         zoom: 15,
+ *         pitch: 60
+ *       }}
+ *       mapStyle="mapbox://styles/mapbox/dark-v11"
+ *     >
+ *       <Canvas latitude={40.7128} longitude={-74.006}>
+ *         <ambientLight intensity={0.5} />
+ *         <mesh>
+ *           <boxGeometry args={[100, 100, 100]} />
+ *           <meshStandardMaterial color="hotpink" />
+ *         </mesh>
+ *       </Canvas>
+ *     </Map>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link CanvasProps} for available props
+ * @see {@link Coordinates} for placing objects at different locations
+ * @see {@link useMap} for accessing the Mapbox map instance
+ */
 export const Canvas = memo<CanvasProps>(({ overlay, ...props }) => {
 
   const mapRef = useMap();
-  
+
   if (!mapRef.current) {
     console.error('Canvas must be used within a Map component from react-map-gl');
     return null;
   }
-  
+
   const map = mapRef.current.getMap();
 
   return <>

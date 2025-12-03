@@ -4,7 +4,7 @@ import { useControls } from 'leva';
 import MapboxGl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { FC, PropsWithChildren, ReactNode } from "react";
+import { FC, PropsWithChildren, ReactNode, cloneElement, isValidElement } from "react";
 import MapboxMap from 'react-map-gl/mapbox';
 import MaplibreMap from 'react-map-gl/maplibre';
 import { Canvas as MapboxCanvas, CanvasProps } from 'react-three-map/mapbox';
@@ -59,11 +59,23 @@ export const StoryMap: FC<StoryMapProps> = (props) => {
       label: 'map provider'
     },
     overlay: {
-      value: false,
+      value: true,
     }
   });
 
   const canvasProps = { overlay, ...canvas };
+  const mapChildrenWithOverlay = isValidElement(mapChildren)
+    ? cloneElement(mapChildren, { overlay })
+    : mapChildren;
+  const mapboxChildrenWithOverlay = isValidElement(mapboxChildren)
+    ? cloneElement(mapboxChildren, { overlay })
+    : mapboxChildren;
+  const maplibreChildrenWithOverlay = isValidElement(maplibreChildren)
+    ? cloneElement(maplibreChildren, { overlay })
+    : maplibreChildren;
+  const childrenWithOverlay = isValidElement(children)
+    ? cloneElement(children, { overlay })
+    : children;
   
   // Set Mapbox token
   const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWJhbGV4OTkiLCJhIjoiY2o1cGttZTJjMGJ5NDMycHFwY2h0amZieSJ9.fHqdZDfrCz6dEYTdnQ-hjQ';
@@ -82,10 +94,10 @@ export const StoryMap: FC<StoryMapProps> = (props) => {
         mapStyle={actualMaplibreStyle}
       >
         <MaplibreCanvas latitude={latitude} longitude={longitude} {...canvasProps}>
-          {children}
+          {childrenWithOverlay}
         </MaplibreCanvas>
-        {mapChildren}
-        {maplibreChildren}
+        {mapChildrenWithOverlay}
+        {maplibreChildrenWithOverlay}
       </MaplibreMap>
     )}
     
@@ -103,10 +115,10 @@ export const StoryMap: FC<StoryMapProps> = (props) => {
         mapStyle={mapboxStyle}
       >
         <MapboxCanvas latitude={latitude} longitude={longitude} {...canvasProps}>
-          {children}
+          {childrenWithOverlay}
         </MapboxCanvas>
-        {mapChildren}
-        {mapboxChildren}
+        {mapChildrenWithOverlay}
+        {mapboxChildrenWithOverlay}
       </MapboxMap>
     )}
     
