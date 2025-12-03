@@ -1,8 +1,10 @@
 # ![logo](public/favicon.svg)React Three Map
 
-[![Repository](https://img.shields.io/static/v1?&message=github&style=flat&colorA=000000&colorB=000000&label=&logo=github&logoColor=ffffff)](https://github.com/edgeengineer/react-three-map)
+[![Repository](https://img.shields.io/static/v1?&message=github&style=flat&colorA=000000&colorB=000000&label=&logo=github&logoColor=ffffff)](https://github.com/wendylabsinc/react-three-map)
 [![Version](https://img.shields.io/npm/v/@edgeengineer/react-three-map?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/@edgeengineer/react-three-map)
 [![Build Size](https://img.shields.io/bundlephobia/minzip/@edgeengineer/react-three-map?label=size&?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=@edgeengineer/react-three-map)
+[![Storybook](https://img.shields.io/badge/storybook-demos-ff4785?style=flat&colorA=000000)](https://wendylabsinc.github.io/react-three-map/storybook/)
+[![TypeDoc](https://img.shields.io/badge/typedoc-API-blue?style=flat&colorA=000000)](https://wendylabsinc.github.io/react-three-map/docs/)
 
 **Fork of [react-three-map](https://github.com/RodrigoHamuy/react-three-map) by [RodrigoHamuy](https://github.com/RodrigoHamuy) with Custom Pivot Controls and extensive utilities for GIS applications.**
 
@@ -48,11 +50,17 @@ npm install @edgeengineer/react-three-map
     - [useMap](#usemap)
     - [coordsToVector3](#coordstovector3)
     - [vector3ToCoords](#vector3tocoords)
+  - [Components](#components)
+    - [EnhancedPivotControls](#enhancedpivotcontrols)
+    - [Compass3D](#compass3d)
+    - [CompassOverlay](#compassoverlay)
 
 
 ## Examples
 
-Check out our examples [here](https://edgeengineer.github.io/react-three-map) (powered by [Storybook](https://storybook.js.org/)).
+Check out our examples [here](https://wendylabsinc.github.io/react-three-map/storybook/) (powered by [Storybook](https://storybook.js.org/)).
+
+For API documentation, see the [TypeDoc](https://wendylabsinc.github.io/react-three-map/docs/).
 
 ## What does it look like?
 
@@ -184,7 +192,7 @@ Therefore, the following `<Canvas>` props are ignored:
 
 ### Coordinates
 
-[![Coordinates example](docs/coordinates.png)](https://rodrigohamuy.github.io/react-three-map/?story=multi-coordinates--default)
+[![Coordinates example](docs/coordinates.png)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/multi-coordinates--default)
 
 This component allows you to have 3D objects at different coordinates.
 
@@ -210,7 +218,7 @@ import { Canvas, Coordinates } from 'react-three-map'
 
 ### NearCoordinates
 
-[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://rodrigohamuy.github.io/react-three-map/?story=multi-coordinates--default)
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/multi-coordinates--default)
 
 Same as `Coordinates`, but scale is ignored in exchange of being able to be rendered under the same scene.
 
@@ -234,7 +242,7 @@ const Component = () => {
 
 ### coordsToVector3
 
-[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://rodrigohamuy.github.io/react-three-map/?story=extrude-coordinates--extrude-coordinates)
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/extrude--extrude-coordinates)
 
 This utility function converts geographic coordinates into a `Vector3Tuple`, which represents a 3D vector in meters.
 
@@ -250,7 +258,7 @@ Returns a `Vector3Tuple` representing the 3D position of the point relative to t
 
 ### vector3ToCoords
 
-[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://rodrigohamuy.github.io/react-three-map/?story=pivot-controls--default)
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/pivotcontrols--default)
 
 This utility function converts a `Vector3Tuple`, which represents a 3D vector in meters, back into geographic coordinates.
 
@@ -264,6 +272,176 @@ Recommended to use at city level distances, but margin errors will be noticeable
 | `origin: Coords`         | The geographic coordinates used as the origin for calculations. |
 
 Returns a `Coords` object representing the geographic coordinates of the point relative to the origin.
+
+## Components
+
+### EnhancedPivotControls
+
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/pivotcontrols--default)
+
+A gizmo component for translating and rotating 3D objects in map space. Provides intuitive controls with translation arrows (red=X, green=Y, blue=Z) and rotation rings for each axis.
+
+```tsx
+import { Canvas, EnhancedPivotControls, useMap } from 'react-three-map/maplibre';
+import { Matrix4, Vector3, Euler } from 'three';
+import { useMemo, useState, useCallback } from 'react';
+
+function DraggableObject() {
+  const map = useMap();
+  const [position, setPosition] = useState<[number, number, number]>([0, 100, 0]);
+  const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
+
+  const matrix = useMemo(() => {
+    const m = new Matrix4();
+    m.makeRotationFromEuler(new Euler(...rotation));
+    m.setPosition(...position);
+    return m;
+  }, [position, rotation]);
+
+  const onDragStart = useCallback(() => {
+    map.dragPan.disable();
+    map.dragRotate.disable();
+  }, [map]);
+
+  const onDragEnd = useCallback(() => {
+    setTimeout(() => {
+      map.dragPan.enable();
+      map.dragRotate.enable();
+    }, 50);
+  }, [map]);
+
+  const onDrag = useCallback((m4: Matrix4) => {
+    const pos = new Vector3().setFromMatrixPosition(m4);
+    setPosition(pos.toArray() as [number, number, number]);
+    const euler = new Euler().setFromRotationMatrix(m4);
+    setRotation([euler.x, euler.y, euler.z]);
+  }, []);
+
+  return (
+    <>
+      <EnhancedPivotControls
+        matrix={matrix}
+        scale={500}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDrag={onDrag}
+        annotations
+      />
+      <mesh position={position} rotation={rotation}>
+        <boxGeometry args={[100, 100, 100]} />
+        <meshStandardMaterial color="orange" />
+      </mesh>
+    </>
+  );
+}
+```
+
+| Prop | Description | Default |
+| ---- | ----------- | ------- |
+| matrix | Transformation matrix for position/rotation/scale | `new Matrix4()` |
+| scale | Scale factor for gizmo size in meters | `1` |
+| onDrag | Callback fired during drag with updated matrix | |
+| onDragStart | Callback when drag starts (disable map interactions here) | |
+| onDragEnd | Callback when drag ends (re-enable map interactions here) | |
+| disableTranslations | Disable translation controls (`true`, `false`, or `[x, y, z]`) | `false` |
+| disableRotations | Disable rotation controls (`true`, `false`, or `[x, y, z]`) | `false` |
+| activeAxes | Which axes are visible `[x, y, z]` | `[true, true, true]` |
+| annotations | Show angle annotations while rotating | `false` |
+| visible | Whether the gizmo is visible | `true` |
+| enabled | Whether the gizmo is interactive | `true` |
+
+### Compass3D
+
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/compass-3d--with-terrain)
+
+A 3D compass component that displays cardinal directions (N, S, E, W) and vertical orientation (Up, Down). By default renders as a HUD overlay that tracks the camera.
+
+```tsx
+import { Canvas, Compass3D } from 'react-three-map/maplibre';
+
+// Basic usage - auto-syncs with camera as HUD overlay
+function MapWithCompass() {
+  return (
+    <Canvas latitude={51} longitude={0}>
+      <Compass3D />
+      {/* your scene */}
+    </Canvas>
+  );
+}
+```
+
+```tsx
+// Custom positioning and size
+<Compass3D
+  alignment="bottom-left"
+  margin={[20, 20]}
+  scale={1.5}
+/>
+```
+
+```tsx
+// World-space compass (not as overlay)
+<Compass3D
+  overlay={false}
+  position={[100, 50, 100]}
+  scale={50}
+/>
+```
+
+| Prop | Description | Default |
+| ---- | ----------- | ------- |
+| overlay | Render as screen-space HUD overlay | `true` |
+| alignment | Screen position when overlayed | `'top-right'` |
+| margin | Pixel margin from screen edge `[x, y]` | `[32, 32]` |
+| scale | Scale multiplier for compass size | `1` |
+| position | Position in 3D space (when overlay=false) | `[0, 0, 0]` |
+| bearing | Map bearing in degrees (manual mode) | `0` |
+| pitch | Map pitch in degrees (manual mode) | `0` |
+| syncWithCamera | Auto-sync with camera orientation | `true` |
+| cylinderLength | Length of axis cylinders | `2` |
+| sphereRadius | Radius of endpoint spheres | `0.2` |
+
+Axis colors follow Three.js convention: Red (X) = East/West, Green (Y) = Up/Down, Blue (Z) = South/North.
+
+### CompassOverlay
+
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/compass-3d--with-terrain)
+
+A screen-space compass overlay that renders in its own React Three Fiber canvas. Creates a separate rendering context that floats above the map.
+
+```tsx
+import Map from 'react-map-gl/maplibre';
+import { CompassOverlay } from 'react-three-map/maplibre';
+
+function App() {
+  return (
+    <Map
+      initialViewState={{ latitude: 51.5, longitude: -0.1, zoom: 15, pitch: 60 }}
+      mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+    >
+      <CompassOverlay />
+    </Map>
+  );
+}
+```
+
+```tsx
+// Custom size and position
+<CompassOverlay
+  size={150}
+  offset={{ x: 30, y: 30 }}
+  className="my-compass"
+/>
+```
+
+| Prop | Description | Default |
+| ---- | ----------- | ------- |
+| size | Size of the overlay square in pixels | `200` |
+| offset | CSS inset from bottom-left corner | `{ x: 20, y: 20 }` |
+| className | Optional className for the container div | |
+| overlay | Controls visibility of the overlay | `true` |
+
+Use `CompassOverlay` when you want the compass in a separate rendering context from your main 3D scene, or when you need precise control over the overlay's position and size.
 
 ## Development
 
@@ -286,21 +464,25 @@ The Storybook will be available at `http://localhost:6006`.
 
 ## GitHub Pages Deployment
 
-The project is configured to automatically deploy Storybook to GitHub Pages when changes are pushed to the `main` branch.
+The project is configured to automatically deploy Storybook and TypeDoc to GitHub Pages when changes are pushed to the `main` branch.
 
 ### Live Demo
-Visit the live Storybook at: https://edgeengineer.github.io/react-three-map/
+
+| Resource | URL |
+| -------- | --- |
+| Storybook | https://wendylabsinc.github.io/react-three-map/storybook/ |
+| TypeDoc API | https://wendylabsinc.github.io/react-three-map/docs/ |
 
 ### Setup GitHub Pages
 
 1. **Enable GitHub Pages in your repository:**
-   - Go to Settings → Pages
+   - Go to Settings -> Pages
    - Under "Source", select "GitHub Actions"
 
 2. **The workflow will automatically:**
-   - Build Storybook on every push to `main`
+   - Build Storybook and TypeDoc on every push to `main`
    - Deploy to GitHub Pages
-   - Make it available at `https://[username].github.io/[repo-name]/`
+   - Make it available at `https://wendylabsinc.github.io/react-three-map/`
 
 ### Manual Deployment
 You can also trigger deployment manually from the Actions tab in GitHub.
