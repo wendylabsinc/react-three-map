@@ -1,8 +1,10 @@
 # ![logo](public/favicon.svg)React Three Map
 
-[![Repository](https://img.shields.io/static/v1?&message=github&style=flat&colorA=000000&colorB=000000&label=&logo=github&logoColor=ffffff)](https://github.com/edgeengineer/react-three-map)
+[![Repository](https://img.shields.io/static/v1?&message=github&style=flat&colorA=000000&colorB=000000&label=&logo=github&logoColor=ffffff)](https://github.com/wendylabsinc/react-three-map)
 [![Version](https://img.shields.io/npm/v/@edgeengineer/react-three-map?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/@edgeengineer/react-three-map)
 [![Build Size](https://img.shields.io/bundlephobia/minzip/@edgeengineer/react-three-map?label=size&?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=@edgeengineer/react-three-map)
+[![Storybook](https://img.shields.io/badge/storybook-demos-ff4785?style=flat&colorA=000000)](https://wendylabsinc.github.io/react-three-map/storybook/)
+[![TypeDoc](https://img.shields.io/badge/typedoc-API-blue?style=flat&colorA=000000)](https://wendylabsinc.github.io/react-three-map/docs/)
 
 **Fork of [react-three-map](https://github.com/RodrigoHamuy/react-three-map) by [RodrigoHamuy](https://github.com/RodrigoHamuy) with Custom Pivot Controls and extensive utilities for GIS applications.**
 
@@ -56,7 +58,9 @@ npm install @edgeengineer/react-three-map
 
 ## Examples
 
-Check out our examples [here](https://edgeengineer.github.io/react-three-map) (powered by [Storybook](https://storybook.js.org/)).
+Check out our examples [here](https://wendylabsinc.github.io/react-three-map/storybook/) (powered by [Storybook](https://storybook.js.org/)).
+
+For API documentation, see the [TypeDoc](https://wendylabsinc.github.io/react-three-map/docs/).
 
 ## What does it look like?
 
@@ -188,7 +192,7 @@ Therefore, the following `<Canvas>` props are ignored:
 
 ### Coordinates
 
-[![Coordinates example](docs/coordinates.png)](https://rodrigohamuy.github.io/react-three-map/?story=multi-coordinates--default)
+[![Coordinates example](docs/coordinates.png)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/multi-coordinates--default)
 
 This component allows you to have 3D objects at different coordinates.
 
@@ -214,7 +218,7 @@ import { Canvas, Coordinates } from 'react-three-map'
 
 ### NearCoordinates
 
-[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://rodrigohamuy.github.io/react-three-map/?story=multi-coordinates--default)
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/multi-coordinates--default)
 
 Same as `Coordinates`, but scale is ignored in exchange of being able to be rendered under the same scene.
 
@@ -238,7 +242,7 @@ const Component = () => {
 
 ### coordsToVector3
 
-[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://rodrigohamuy.github.io/react-three-map/?story=extrude-coordinates--extrude-coordinates)
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/extrude--extrude-coordinates)
 
 This utility function converts geographic coordinates into a `Vector3Tuple`, which represents a 3D vector in meters.
 
@@ -254,7 +258,7 @@ Returns a `Vector3Tuple` representing the 3D position of the point relative to t
 
 ### vector3ToCoords
 
-[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://rodrigohamuy.github.io/react-three-map/?story=pivot-controls--default)
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/pivotcontrols--default)
 
 This utility function converts a `Vector3Tuple`, which represents a 3D vector in meters, back into geographic coordinates.
 
@@ -272,6 +276,8 @@ Returns a `Coords` object representing the geographic coordinates of the point r
 ## Components
 
 ### EnhancedPivotControls
+
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/pivotcontrols--default)
 
 A gizmo component for translating and rotating 3D objects in map space. Provides intuitive controls with translation arrows (red=X, green=Y, blue=Z) and rotation rings for each axis.
 
@@ -346,6 +352,8 @@ function DraggableObject() {
 
 ### Compass3D
 
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/compass-3d--with-terrain)
+
 A 3D compass component that displays cardinal directions (N, S, E, W) and vertical orientation (Up, Down). By default renders as a HUD overlay that tracks the camera.
 
 ```tsx
@@ -396,6 +404,8 @@ function MapWithCompass() {
 Axis colors follow Three.js convention: Red (X) = East/West, Green (Y) = Up/Down, Blue (Z) = South/North.
 
 ### CompassOverlay
+
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/compass-3d--with-terrain)
 
 A screen-space compass overlay that renders in its own React Three Fiber canvas. Creates a separate rendering context that floats above the map.
 
@@ -454,21 +464,25 @@ The Storybook will be available at `http://localhost:6006`.
 
 ## GitHub Pages Deployment
 
-The project is configured to automatically deploy Storybook to GitHub Pages when changes are pushed to the `main` branch.
+The project is configured to automatically deploy Storybook and TypeDoc to GitHub Pages when changes are pushed to the `main` branch.
 
 ### Live Demo
-Visit the live Storybook at: https://edgeengineer.github.io/react-three-map/
+
+| Resource | URL |
+| -------- | --- |
+| Storybook | https://wendylabsinc.github.io/react-three-map/storybook/ |
+| TypeDoc API | https://wendylabsinc.github.io/react-three-map/docs/ |
 
 ### Setup GitHub Pages
 
 1. **Enable GitHub Pages in your repository:**
-   - Go to Settings → Pages
+   - Go to Settings -> Pages
    - Under "Source", select "GitHub Actions"
 
 2. **The workflow will automatically:**
-   - Build Storybook on every push to `main`
+   - Build Storybook and TypeDoc on every push to `main`
    - Deploy to GitHub Pages
-   - Make it available at `https://[username].github.io/[repo-name]/`
+   - Make it available at `https://wendylabsinc.github.io/react-three-map/`
 
 ### Manual Deployment
 You can also trigger deployment manually from the Actions tab in GitHub.
