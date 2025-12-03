@@ -22,7 +22,8 @@
     "./docs-src/getting-started.md",
     "./docs-src/multiple-locations.md",
     "./docs-src/interacting-with-map.md",
-    "./docs-src/pivot-controls.md"
+    "./docs-src/pivot-controls.md",
+    "./docs-src/compass.md"
   ],
   "navigationLinks": {
     "Storybook": "https://wendylabsinc.github.io/react-three-map/storybook/",
