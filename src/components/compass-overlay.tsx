@@ -1,22 +1,91 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+/**
+ * @packageDocumentation
+ * Screen-space compass overlay component.
+ */
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useMap } from 'react-map-gl/maplibre';
 import { Compass3D } from './compass-3d';
 
+/**
+ * Props for the CompassOverlay component.
+ *
+ * @example Basic usage
+ * ```tsx
+ * <CompassOverlay />
+ * ```
+ *
+ * @example Custom size and position
+ * ```tsx
+ * <CompassOverlay
+ *   size={150}
+ *   offset={{ x: 30, y: 30 }}
+ * />
+ * ```
+ */
 export interface CompassOverlayProps {
-  /** Size of the overlay square in px */
+  /**
+   * Size of the overlay square in pixels.
+   * @defaultValue 200
+   */
   size?: number;
-  /** CSS inset from bottom/left */
+
+  /**
+   * CSS inset from bottom-left corner in pixels.
+   * @defaultValue \{ x: 20, y: 20 \}
+   */
   offset?: { x: number; y: number };
-  /** Optional className for the outer div */
+
+  /**
+   * Optional className for the outer container div.
+   */
   className?: string;
-  /** Respect external overlay toggle */
+
+  /**
+   * Controls visibility of the overlay.
+   * Set to false to hide the compass.
+   * @defaultValue true
+   */
   overlay?: boolean;
 }
 
 /**
- * Screen-space compass overlay that syncs to the MapLibre camera bearing/pitch.
- * Renders its own R3F canvas layered above the map.
+ * A screen-space compass overlay that renders in its own React Three Fiber canvas.
+ *
+ * This component creates a separate R3F canvas that floats above the map and displays
+ * a 3D compass synchronized with the MapLibre camera's bearing and pitch.
+ *
+ * Use this when you want the compass in a separate rendering context from your main
+ * 3D scene, or when you need precise control over the overlay's position and size.
+ *
+ * @example Basic usage inside a Map
+ * ```tsx
+ * import Map from 'react-map-gl/maplibre';
+ * import { CompassOverlay } from 'react-three-map/maplibre';
+ *
+ * function App() {
+ *   return (
+ *     <Map
+ *       initialViewState={{ latitude: 51.5, longitude: -0.1, zoom: 15, pitch: 60 }}
+ *       mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+ *     >
+ *       <CompassOverlay />
+ *     </Map>
+ *   );
+ * }
+ * ```
+ *
+ * @example Custom positioning
+ * ```tsx
+ * <CompassOverlay
+ *   size={150}
+ *   offset={{ x: 10, y: 10 }}
+ *   className="my-compass"
+ * />
+ * ```
+ *
+ * @see {@link Compass3D} for the in-canvas compass component
+ * @see {@link CompassOverlayProps} for available configuration options
  */
 export function CompassOverlay({
   size = 200,

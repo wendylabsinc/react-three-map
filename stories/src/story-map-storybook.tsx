@@ -4,7 +4,7 @@ import { useControls } from 'leva';
 import MapboxGl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { FC, PropsWithChildren, ReactNode, cloneElement, isValidElement } from "react";
+import { FC, PropsWithChildren, ReactElement, ReactNode, cloneElement, isValidElement } from "react";
 import MapboxMap from 'react-map-gl/mapbox';
 import MaplibreMap from 'react-map-gl/maplibre';
 import { Canvas as MapboxCanvas, CanvasProps } from 'react-three-map/mapbox';
@@ -65,16 +65,16 @@ export const StoryMap: FC<StoryMapProps> = (props) => {
 
   const canvasProps = { overlay, ...canvas };
   const mapChildrenWithOverlay = isValidElement(mapChildren)
-    ? cloneElement(mapChildren, { overlay })
+    ? cloneElement(mapChildren as ReactElement<{ overlay?: boolean }>, { overlay })
     : mapChildren;
   const mapboxChildrenWithOverlay = isValidElement(mapboxChildren)
-    ? cloneElement(mapboxChildren, { overlay })
+    ? cloneElement(mapboxChildren as ReactElement<{ overlay?: boolean }>, { overlay })
     : mapboxChildren;
   const maplibreChildrenWithOverlay = isValidElement(maplibreChildren)
-    ? cloneElement(maplibreChildren, { overlay })
+    ? cloneElement(maplibreChildren as ReactElement<{ overlay?: boolean }>, { overlay })
     : maplibreChildren;
   const childrenWithOverlay = isValidElement(children)
-    ? cloneElement(children, { overlay })
+    ? cloneElement(children as ReactElement<{ overlay?: boolean }>, { overlay })
     : children;
   
   // Set Mapbox token
