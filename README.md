@@ -1,14 +1,14 @@
 # ![logo](public/favicon.svg)React Three Map
 
 [![Repository](https://img.shields.io/static/v1?&message=github&style=flat&colorA=000000&colorB=000000&label=&logo=github&logoColor=ffffff)](https://github.com/wendylabsinc/react-three-map)
-[![Version](https://img.shields.io/npm/v/@edgeengineer/react-three-map?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/@edgeengineer/react-three-map)
-[![Build Size](https://img.shields.io/bundlephobia/minzip/@edgeengineer/react-three-map?label=size&?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=@edgeengineer/react-three-map)
+[![Version](https://img.shields.io/npm/v/@wendylabsinc/react-three-map?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/@wendylabsinc/react-three-map)
+[![Build Size](https://img.shields.io/bundlephobia/minzip/@wendylabsinc/react-three-map?label=size&?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=@wendylabsinc/react-three-map)
 [![Storybook](https://img.shields.io/badge/storybook-demos-ff4785?style=flat&colorA=000000)](https://wendylabsinc.github.io/react-three-map/storybook/)
 [![TypeDoc](https://img.shields.io/badge/typedoc-API-blue?style=flat&colorA=000000)](https://wendylabsinc.github.io/react-three-map/docs/)
 
 **Fork of [react-three-map](https://github.com/RodrigoHamuy/react-three-map) by [RodrigoHamuy](https://github.com/RodrigoHamuy) with Custom Pivot Controls and extensive utilities for GIS applications.**
 
-`@edgeengineer/react-three-map` is an enhanced bridge to use [`react-three-fiber`](https://github.com/pmndrs/react-three-fiber) inside [`react-map-gl`](https://github.com/visgl/react-map-gl) with additional features for professional GIS workflows.
+`@wendylabsinc/react-three-map` is an enhanced bridge to use [`react-three-fiber`](https://github.com/pmndrs/react-three-fiber) inside [`react-map-gl`](https://github.com/visgl/react-map-gl) with additional features for professional GIS workflows.
 
 Until now you had:
 
@@ -17,7 +17,7 @@ Until now you had:
 | Maplibre/Mapbox | react-map-gl        |
 | THREE.js        | react-three-fiber   |
 
-Now with `@edgeengineer/react-three-map`, you can use them together.
+Now with `@wendylabsinc/react-three-map`, you can use them together.
 
 ## About This Fork
 
@@ -34,7 +34,7 @@ Now with `@edgeengineer/react-three-map`, you can use them together.
 - **Performance Optimizations** - Optimized for large-scale GIS applications
 
 ```sh
-npm install @edgeengineer/react-three-map
+npm install @wendylabsinc/react-three-map
 ```
 
 - [React Three Map](#react-three-map)
@@ -50,6 +50,10 @@ npm install @edgeengineer/react-three-map
     - [useMap](#usemap)
     - [coordsToVector3](#coordstovector3)
     - [vector3ToCoords](#vector3tocoords)
+  - [Geofence Utilities](#geofence-utilities)
+    - [bufferGeometryToWKT](#buffergeometrytowkt)
+    - [wktToBufferGeometry](#wkttobuffergeometry)
+    - [isCoordsInPolyhedron](#iscoordsinpolyhedron)
   - [Components](#components)
     - [EnhancedPivotControls](#enhancedpivotcontrols)
     - [Compass3D](#compass3d)
@@ -272,6 +276,106 @@ Recommended to use at city level distances, but margin errors will be noticeable
 | `origin: Coords`         | The geographic coordinates used as the origin for calculations. |
 
 Returns a `Coords` object representing the geographic coordinates of the point relative to the origin.
+
+## Geofence Utilities
+
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/geofence--default)
+
+These utilities enable creating, storing, and querying 3D geofences. Convert Three.js BufferGeometry to PostGIS-compatible formats and test whether points are inside 3D volumes.
+
+### bufferGeometryToWKT
+
+Converts a Three.js BufferGeometry to PostGIS `POLYHEDRALSURFACE Z` WKT format for database storage.
+
+```tsx
+import { bufferGeometryToWKT } from 'react-three-map/maplibre';
+import { BoxGeometry } from 'three';
+
+// Define the geofence origin (Canvas position)
+const origin = { latitude: 51.5074, longitude: -0.1278, altitude: 0 };
+
+// Create a 100m x 100m x 100m geofence volume
+const geofence = new BoxGeometry(100, 100, 100);
+
+// Convert to WKT for PostGIS storage
+const wkt = bufferGeometryToWKT(geofence, { origin, precision: 8 });
+
+// Store in PostGIS:
+// INSERT INTO geofences (geom) VALUES (ST_GeomFromText(wkt, 4326))
+```
+
+| Parameter | Description |
+| --------- | ----------- |
+| `geometry` | The Three.js BufferGeometry to convert |
+| `options.origin` | Geographic origin for coordinate conversion (should match Canvas position) |
+| `options.precision` | Decimal places for coordinates (default: 8) |
+
+Returns a WKT string in `POLYHEDRALSURFACE Z ((...))` format.
+
+### wktToBufferGeometry
+
+Parses a PostGIS `POLYHEDRALSURFACE Z` WKT string back into a Three.js BufferGeometry.
+
+```tsx
+import { wktToBufferGeometry } from 'react-three-map/maplibre';
+
+// Load WKT from database
+const wkt = await fetchGeofenceFromDB();
+const origin = { latitude: 51.5074, longitude: -0.1278, altitude: 0 };
+
+// Convert back to BufferGeometry
+const geometry = wktToBufferGeometry(wkt, { origin });
+
+// Render in scene
+<mesh geometry={geometry}>
+  <meshStandardMaterial color="blue" opacity={0.3} transparent />
+</mesh>
+```
+
+| Parameter | Description |
+| --------- | ----------- |
+| `wkt` | The WKT string in POLYHEDRALSURFACE Z format |
+| `options.origin` | Geographic origin for coordinate conversion |
+
+Returns a Three.js `BufferGeometry`.
+
+### isCoordsInPolyhedron
+
+Tests whether a geographic coordinate is inside a 3D geofence volume.
+
+```tsx
+import { isCoordsInPolyhedron } from 'react-three-map/maplibre';
+import { BoxGeometry } from 'three';
+
+const origin = { latitude: 51.5074, longitude: -0.1278, altitude: 0 };
+const geofence = new BoxGeometry(100, 100, 100);
+
+// Test if a point is inside the geofence
+const testPoint = { latitude: 51.5074, longitude: -0.1278, altitude: 25 };
+const result = isCoordsInPolyhedron(testPoint, geofence, origin);
+
+if (result.inside) {
+  console.log('Point is inside the geofence!');
+}
+```
+
+| Parameter | Description |
+| --------- | ----------- |
+| `coords` | Geographic coordinates to test `{ latitude, longitude, altitude }` |
+| `geometry` | The BufferGeometry representing the closed 3D volume |
+| `origin` | Geographic origin for coordinate conversion |
+
+Returns `{ inside: boolean, intersectionCount: number }`.
+
+**Additional Functions:**
+
+| Function | Description |
+| -------- | ----------- |
+| `isPointInPolyhedron(point, geometry)` | Test a 3D point (Vector3Tuple) against geometry |
+| `isCoordsInGeoTriangles(coords, triangles, origin)` | Test coords against GeoTriangle[] from database |
+| `bufferGeometryToGeoTriangles(geometry, origin)` | Convert to JSON-serializable GeoTriangle[] |
+| `geoTrianglesToBufferGeometry(triangles, origin)` | Convert GeoTriangle[] back to BufferGeometry |
+| `isPointOnSurface(point, geometry, tolerance)` | Test if point is on the surface (within tolerance) |
 
 ## Components
 
