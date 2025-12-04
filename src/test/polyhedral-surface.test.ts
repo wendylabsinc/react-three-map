@@ -8,6 +8,7 @@ import {
   bufferGeometryToGeoTriangles,
   geoTrianglesToBufferGeometry,
   GeoTriangle,
+  validatePolyhedronGeometry,
 } from "../api/polyhedral-surface";
 import { Coords } from "../api/coords";
 
@@ -126,6 +127,63 @@ describe("polyhedral-surface", () => {
       expect(triangles.length).toBe(1);
     });
 
+    it("handles SRID-prefixed WKT", () => {
+      const wkt = `SRID=4326;POLYHEDRALSURFACE Z (
+        ((-0.1278 51.5074 0, -0.1268 51.5074 0, -0.1273 51.5084 0, -0.1278 51.5074 0))
+      )`;
+
+      const triangles = parsePolyhedralSurfaceWKT(wkt);
+      expect(triangles.length).toBe(1);
+    });
+
+    it("triangulates quad faces into triangles", () => {
+      const wkt = `POLYHEDRALSURFACE Z (
+        ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))
+      )`;
+
+      const triangles = parsePolyhedralSurfaceWKT(wkt);
+      expect(triangles.length).toBe(2);
+      expect(triangles.every((t) => t.v0.altitude === 0)).toBe(true);
+    });
+
+    it("returns empty array for EMPTY surfaces", () => {
+      const triangles = parsePolyhedralSurfaceWKT("POLYHEDRALSURFACE Z EMPTY");
+      expect(triangles).toEqual([]);
+    });
+
+    it("throws on interior rings", () => {
+      const wkt = `POLYHEDRALSURFACE Z (
+        ((0 0 0, 2 0 0, 2 2 0, 0 2 0, 0 0 0), (0.5 0.5 0, 1.5 0.5 0, 1.5 1.5 0, 0.5 1.5 0, 0.5 0.5 0))
+      )`;
+
+      expect(() => parsePolyhedralSurfaceWKT(wkt)).toThrow(/interior rings are not supported/i);
+    });
+
+    it("throws on unclosed rings", () => {
+      const wkt = `POLYHEDRALSURFACE Z (
+        ((0 0 0, 1 0 0, 1 1 0, 0 1 0))
+      )`;
+
+      expect(() => parsePolyhedralSurfaceWKT(wkt)).toThrow(/must match to close the ring/i);
+    });
+
+    it("throws on invalid numeric values", () => {
+      const wkt = `POLYHEDRALSURFACE Z (
+        ((abc 0 0, 1 0 0, 1 1 0, abc 0 0))
+      )`;
+
+      expect(() => parsePolyhedralSurfaceWKT(wkt)).toThrow(/numeric value/i);
+    });
+
+    it("supports ZM by ignoring the measure", () => {
+      const wkt = `POLYHEDRALSURFACE ZM (
+        ((0 0 0 5, 1 0 0 5, 0 1 0 5, 0 0 0 5))
+      )`;
+
+      const triangles = parsePolyhedralSurfaceWKT(wkt);
+      expect(triangles.length).toBe(1);
+    });
+
     it("throws error for invalid WKT format", () => {
       expect(() => parsePolyhedralSurfaceWKT("POINT(0 0)")).toThrow(
         /Invalid WKT format: expected 'POLYHEDRALSURFACE Z/
@@ -150,7 +208,7 @@ describe("polyhedral-surface", () => {
     it("throws error for empty WKT", () => {
       const wkt = "POLYHEDRALSURFACE Z ()";
       expect(() => wktToBufferGeometry(wkt, { origin })).toThrow(
-        "WKT contains no valid triangular faces"
+        /no faces to convert/i
       );
     });
   });
@@ -227,6 +285,54 @@ describe("polyhedral-surface", () => {
       const reconstructedTriangles = extractGeoTriangles(reconstructed, origin);
 
       expect(reconstructedTriangles.length).toBe(originalTriangles.length);
+    });
+  });
+
+  describe("validatePolyhedronGeometry", () => {
+    it("accepts watertight indexed geometries", () => {
+      const box = new BoxGeometry(10, 10, 10);
+      const res = validatePolyhedronGeometry(box);
+      expect(res.isValid).toBe(true);
+      expect(res.errors.length).toBe(0);
+      expect(res.triangleCount).toBeGreaterThan(0);
+      expect(res.nonManifoldEdgeCount).toBe(0);
+    });
+
+    it("accepts watertight non-indexed geometries", () => {
+      const box = new BoxGeometry(10, 10, 10).toNonIndexed();
+      const res = validatePolyhedronGeometry(box);
+      expect(res.isValid).toBe(true);
+      expect(res.nonManifoldEdgeCount).toBe(0);
+    });
+
+    it("flags missing position attribute", () => {
+      const geometry = new BufferGeometry();
+      const res = validatePolyhedronGeometry(geometry);
+      expect(res.isValid).toBe(false);
+      expect(res.errors.length).toBeGreaterThan(0);
+    });
+
+    it("flags non-watertight geometries", () => {
+      const geometry = new BufferGeometry();
+      geometry.setAttribute(
+        "position",
+        new Float32BufferAttribute(new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), 3)
+      );
+      const res = validatePolyhedronGeometry(geometry);
+      expect(res.isValid).toBe(false);
+      expect(res.nonManifoldEdgeCount).toBeGreaterThan(0);
+      expect(res.errors.some((e) => /non-manifold edges/i.test(e))).toBe(true);
+    });
+
+    it("flags degenerate triangles", () => {
+      const geometry = new BufferGeometry();
+      geometry.setAttribute(
+        "position",
+        new Float32BufferAttribute(new Float32Array([0, 0, 0, 1, 1, 1, 2, 2, 2]), 3)
+      ); // Collinear points
+      const res = validatePolyhedronGeometry(geometry);
+      expect(res.isValid).toBe(false);
+      expect(res.errors.some((e) => /degenerate/i.test(e))).toBe(true);
     });
   });
 });

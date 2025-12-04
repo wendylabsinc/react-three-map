@@ -59,6 +59,7 @@ describe("point-in-polyhedron", () => {
 
       const result = isPointInPolyhedron(pointJustOutside, box);
       expect(result.inside).toBe(false);
+      expect(result.onBoundary).toBe(false);
     });
 
     it("works with sphere geometry", () => {
@@ -91,6 +92,17 @@ describe("point-in-polyhedron", () => {
 
       expect(isPointInPolyhedron([0, 0, 0], nonIndexed).inside).toBe(true);
       expect(isPointInPolyhedron([200, 0, 0], nonIndexed).inside).toBe(false);
+    });
+
+    it("treats points on faces/edges/vertices as inside with boundary flag", () => {
+      const box = new BoxGeometry(100, 100, 100);
+      const onFace: Vector3Tuple = [50, 0, 0];
+      const onEdge: Vector3Tuple = [50, 50, 0];
+      const onVertex: Vector3Tuple = [50, 50, 50];
+
+      expect(isPointInPolyhedron(onFace, box)).toMatchObject({ inside: true, onBoundary: true });
+      expect(isPointInPolyhedron(onEdge, box)).toMatchObject({ inside: true, onBoundary: true });
+      expect(isPointInPolyhedron(onVertex, box)).toMatchObject({ inside: true, onBoundary: true });
     });
   });
 
@@ -179,6 +191,16 @@ describe("point-in-polyhedron", () => {
         const geoResult = isPointInGeoTriangles(point, triangles, origin);
         expect(geoResult.inside).toBe(bufferResult.inside);
       }
+    });
+
+    it("flags boundary hits for GeoTriangle input", () => {
+      const box = new BoxGeometry(100, 100, 100);
+      const triangles = extractGeoTriangles(box, origin);
+      const onFace: Vector3Tuple = [50, 0, 0];
+
+      const result = isPointInGeoTriangles(onFace, triangles, origin);
+      expect(result.inside).toBe(true);
+      expect(result.onBoundary).toBe(true);
     });
   });
 

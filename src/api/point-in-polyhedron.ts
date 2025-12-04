@@ -13,11 +13,20 @@ export interface PointInPolyhedronResult {
   inside: boolean;
 
   /**
+   * Whether the point lies on the surface (within tolerance).
+   */
+  onBoundary?: boolean;
+
+  /**
    * The number of ray-triangle intersections found.
    * An odd number indicates the point is inside.
    */
   intersectionCount: number;
 }
+
+const RAY_DIRECTION = new Vector3(1, 0.0001, 0.0001).normalize();
+const RAY_EPSILON = 1e-12;
+const BOUNDARY_TOLERANCE = 1e-3;
 
 /**
  * Tests whether a 3D point is inside a closed polyhedron using ray casting.
@@ -56,9 +65,7 @@ export function isPointInPolyhedron(
   const origin = new Vector3(point[0], point[1], point[2]);
 
   // Use a direction that's unlikely to be parallel to edges
-  // (1, 0.0001, 0.0001) normalized
-  const direction = new Vector3(1, 0.0001, 0.0001).normalize();
-  const ray = new Ray(origin, direction);
+  const ray = new Ray(origin, RAY_DIRECTION);
 
   const positionAttr = geometry.getAttribute("position");
   if (!positionAttr) {
@@ -68,8 +75,27 @@ export function isPointInPolyhedron(
     );
   }
 
+  if (positionAttr.itemSize !== 3) {
+    throw new Error(
+      `Expected position attribute itemSize of 3, received ${positionAttr.itemSize}. ` +
+      "BufferGeometry must contain 3D positions."
+    );
+  }
+
   const positions = positionAttr.array as Float32Array;
   const index = geometry.getIndex();
+
+  if (!index && positions.length % 3 !== 0) {
+    throw new Error("Non-indexed BufferGeometry position array length must be a multiple of 3.");
+  }
+
+  if (index && index.array.length % 3 !== 0) {
+    throw new Error("Indexed BufferGeometry must have indices in multiples of 3.");
+  }
+
+  if (isPointOnSurface(point, geometry, BOUNDARY_TOLERANCE)) {
+    return { inside: true, intersectionCount: 0, onBoundary: true };
+  }
 
   let intersectionCount = 0;
   const triangle = new Triangle();
@@ -89,7 +115,7 @@ export function isPointInPolyhedron(
 
       if (ray.intersectTriangle(triangle.a, triangle.b, triangle.c, false, target)) {
         // Check if intersection is in the positive direction
-        if (target.sub(origin).dot(direction) > 0) {
+        if (target.clone().sub(origin).dot(RAY_DIRECTION) > RAY_EPSILON) {
           intersectionCount++;
         }
       }
@@ -103,7 +129,7 @@ export function isPointInPolyhedron(
 
       if (ray.intersectTriangle(triangle.a, triangle.b, triangle.c, false, target)) {
         // Check if intersection is in the positive direction
-        if (target.sub(origin).dot(direction) > 0) {
+        if (target.clone().sub(origin).dot(RAY_DIRECTION) > RAY_EPSILON) {
           intersectionCount++;
         }
       }
@@ -113,6 +139,7 @@ export function isPointInPolyhedron(
   return {
     inside: intersectionCount % 2 === 1,
     intersectionCount,
+    onBoundary: false,
   };
 }
 
@@ -197,11 +224,12 @@ export function isPointInGeoTriangles(
   const originVec = new Vector3(point[0], point[1], point[2]);
 
   // Use a direction that's unlikely to be parallel to edges
-  const direction = new Vector3(1, 0.0001, 0.0001).normalize();
-  const ray = new Ray(originVec, direction);
+  const ray = new Ray(originVec, RAY_DIRECTION);
 
   let intersectionCount = 0;
   const target = new Vector3();
+  const closestPoint = new Vector3();
+  const triangle = new Triangle();
 
   const geoVertexToVector3 = (v: GeoVertex): Vector3 => {
     const pos = coordsToVector3(v, origin);
@@ -213,9 +241,18 @@ export function isPointInGeoTriangles(
     const b = geoVertexToVector3(tri.v1);
     const c = geoVertexToVector3(tri.v2);
 
+    triangle.a.copy(a);
+    triangle.b.copy(b);
+    triangle.c.copy(c);
+
+    triangle.closestPointToPoint(originVec, closestPoint);
+    if (originVec.distanceTo(closestPoint) <= BOUNDARY_TOLERANCE) {
+      return { inside: true, intersectionCount: 0, onBoundary: true };
+    }
+
     if (ray.intersectTriangle(a, b, c, false, target)) {
       // Check if intersection is in the positive direction
-      if (target.clone().sub(originVec).dot(direction) > 0) {
+      if (target.clone().sub(originVec).dot(RAY_DIRECTION) > RAY_EPSILON) {
         intersectionCount++;
       }
     }
@@ -224,6 +261,7 @@ export function isPointInGeoTriangles(
   return {
     inside: intersectionCount % 2 === 1,
     intersectionCount,
+    onBoundary: false,
   };
 }
 
