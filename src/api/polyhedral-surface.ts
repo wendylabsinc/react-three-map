@@ -1,6 +1,5 @@
 import { BufferGeometry, Vector3Tuple, Float32BufferAttribute, Vector3 } from "three";
 // three ships Earcut internally; use it for triangulating polygon faces with >3 vertices
-// @ts-expect-error Earcut path is provided by three but has no type declarations
 import { Earcut } from "three/src/extras/Earcut.js";
 import { Coords } from "./coords";
 import { coordsToVector3 } from "./coords-to-vector-3";
@@ -639,7 +638,6 @@ export function validatePolyhedronGeometry(
     };
   }
 
-  const triangles = index ? index.array.length / 3 : positions.length / 9;
   let triangleCount = 0;
 
   const vertexKey = (x: number, y: number, z: number): string => {
