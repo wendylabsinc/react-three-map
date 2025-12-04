@@ -1,14 +1,14 @@
 # ![logo](public/favicon.svg)React Three Map
 
 [![Repository](https://img.shields.io/static/v1?&message=github&style=flat&colorA=000000&colorB=000000&label=&logo=github&logoColor=ffffff)](https://github.com/wendylabsinc/react-three-map)
-[![Version](https://img.shields.io/npm/v/@edgeengineer/react-three-map?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/@edgeengineer/react-three-map)
-[![Build Size](https://img.shields.io/bundlephobia/minzip/@edgeengineer/react-three-map?label=size&?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=@edgeengineer/react-three-map)
+[![Version](https://img.shields.io/npm/v/@wendylabsinc/react-three-map?style=flat&colorA=000000&colorB=000000)](https://npmjs.com/package/@wendylabsinc/react-three-map)
+[![Build Size](https://img.shields.io/bundlephobia/minzip/@wendylabsinc/react-three-map?label=size&?style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=@wendylabsinc/react-three-map)
 [![Storybook](https://img.shields.io/badge/storybook-demos-ff4785?style=flat&colorA=000000)](https://wendylabsinc.github.io/react-three-map/storybook/)
 [![TypeDoc](https://img.shields.io/badge/typedoc-API-blue?style=flat&colorA=000000)](https://wendylabsinc.github.io/react-three-map/docs/)
 
 **Fork of [react-three-map](https://github.com/RodrigoHamuy/react-three-map) by [RodrigoHamuy](https://github.com/RodrigoHamuy) with Custom Pivot Controls and extensive utilities for GIS applications.**
 
-`@edgeengineer/react-three-map` is an enhanced bridge to use [`react-three-fiber`](https://github.com/pmndrs/react-three-fiber) inside [`react-map-gl`](https://github.com/visgl/react-map-gl) with additional features for professional GIS workflows.
+`@wendylabsinc/react-three-map` is an enhanced bridge to use [`react-three-fiber`](https://github.com/pmndrs/react-three-fiber) inside [`react-map-gl`](https://github.com/visgl/react-map-gl) with additional features for professional GIS workflows.
 
 Until now you had:
 
@@ -17,7 +17,7 @@ Until now you had:
 | Maplibre/Mapbox | react-map-gl        |
 | THREE.js        | react-three-fiber   |
 
-Now with `@edgeengineer/react-three-map`, you can use them together.
+Now with `@wendylabsinc/react-three-map`, you can use them together.
 
 ## About This Fork
 
@@ -34,7 +34,7 @@ Now with `@edgeengineer/react-three-map`, you can use them together.
 - **Performance Optimizations** - Optimized for large-scale GIS applications
 
 ```sh
-npm install @edgeengineer/react-three-map
+npm install @wendylabsinc/react-three-map
 ```
 
 - [React Three Map](#react-three-map)

@@ -1,5 +1,5 @@
 {
-  "name": "@edgeengineer/react-three-map",
+  "name": "@wendylabsinc/react-three-map",
   "version": "1.0.1",
   "description": "A React wrapper library for Google Maps 3D with React Three Fiber integration",
   "main": "dist/index.js",
