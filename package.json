@@ -1,6 +1,6 @@
 {
   "name": "@wendylabsinc/react-three-map",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A React wrapper library for Google Maps 3D with React Three Fiber integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,10 +8,13 @@
     "dist"
   ],
   "sideEffects": false,
-  "repository": "https://github.com/edgeengineer/react-three-map",
-  "homepage": "https://github.com/edgeengineer/react-three-map",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wendylabsinc/react-three-map.git"
+  },
+  "homepage": "https://github.com/wendylabsinc/react-three-map",
   "bugs": {
-    "url": "https://github.com/edgeengineer/react-three-map/issues"
+    "url": "https://github.com/wendylabsinc/react-three-map/issues"
   },
   "license": "MIT",
   "author": "EdgeEngineer",

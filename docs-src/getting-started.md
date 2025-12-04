@@ -5,7 +5,7 @@ This guide will help you set up react-three-map in your project.
 ## Installation
 
 ```bash
-npm install @edgeengineer/react-three-map
+npm install @wendylabsinc/react-three-map
 ```
 
 You'll also need the peer dependencies:
