@@ -1,6 +1,6 @@
 import { useThree } from "@react-three/fiber";
 import { memo, useEffect, useState } from "react";
-import { useMap } from "react-three-map";
+import { useMap } from "@wendylabsinc/react-three-map";
 
 export const AdaptiveDpr = memo(() => {
   const initialDpr = useThree(s => s.viewport.initialDpr)

@@ -197,7 +197,7 @@ function toGeoVertex(tuple: Vector3Tuple, origin: Coords): GeoVertex {
  *
  * @example
  * ```ts
- * import { extractGeoTriangles } from 'react-three-map/maplibre';
+ * import { extractGeoTriangles } from '@wendylabsinc/react-three-map/maplibre';
  * import { BoxGeometry } from 'three';
  *
  * const geometry = new BoxGeometry(100, 100, 100);
@@ -301,7 +301,7 @@ export function extractGeoTriangles(
  *
  * @example
  * ```ts
- * import { bufferGeometryToWKT } from 'react-three-map/maplibre';
+ * import { bufferGeometryToWKT } from '@wendylabsinc/react-three-map/maplibre';
  * import { BoxGeometry } from 'three';
  *
  * const geometry = new BoxGeometry(100, 100, 100);
@@ -367,7 +367,7 @@ export function bufferGeometryToWKT(
  *
  * @example
  * ```ts
- * import { wktToBufferGeometry } from 'react-three-map/maplibre';
+ * import { wktToBufferGeometry } from '@wendylabsinc/react-three-map/maplibre';
  *
  * const wkt = 'POLYHEDRALSURFACE Z (((-0.1 51.5 0, -0.1 51.6 0, -0.2 51.5 0, -0.1 51.5 0)))';
  * const origin = { latitude: 51.5074, longitude: -0.1278, altitude: 0 };
@@ -503,7 +503,7 @@ export function parsePolyhedralSurfaceWKT(wkt: string): GeoTriangle[] {
  *
  * @example
  * ```ts
- * import { bufferGeometryToGeoTriangles } from 'react-three-map/maplibre';
+ * import { bufferGeometryToGeoTriangles } from '@wendylabsinc/react-three-map/maplibre';
  *
  * const triangles = bufferGeometryToGeoTriangles(geometry, origin);
  * const json = JSON.stringify(triangles);
@@ -527,7 +527,7 @@ export function bufferGeometryToGeoTriangles(
  *
  * @example
  * ```ts
- * import { geoTrianglesToBufferGeometry } from 'react-three-map/maplibre';
+ * import { geoTrianglesToBufferGeometry } from '@wendylabsinc/react-three-map/maplibre';
  *
  * const json = await fetchFromDatabase();
  * const triangles = JSON.parse(json);

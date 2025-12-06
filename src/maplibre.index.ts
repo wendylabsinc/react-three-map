@@ -5,13 +5,13 @@
  * Use this when working with MapLibre GL JS and `react-map-gl/maplibre`.
  *
  * @packageDocumentation
- * @module react-three-map/maplibre
+ * @module @wendylabsinc/react-three-map/maplibre
  *
  * @example
  * ```tsx
  * import "maplibre-gl/dist/maplibre-gl.css";
  * import Map from "react-map-gl/maplibre";
- * import { Canvas, Coordinates, useMap, coordsToVector3 } from "react-three-map/maplibre";
+ * import { Canvas, Coordinates, useMap, coordsToVector3 } from "@wendylabsinc/react-three-map/maplibre";
  *
  * function App() {
  *   return (
@@ -49,7 +49,7 @@ export type { CompassOverlayProps } from './components/compass-overlay';
  *
  * @example
  * ```tsx
- * import { useMap } from "react-three-map/maplibre";
+ * import { useMap } from "@wendylabsinc/react-three-map/maplibre";
  *
  * function MyComponent() {
  *   const map = useMap();

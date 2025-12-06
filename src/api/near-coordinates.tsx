@@ -21,7 +21,7 @@ import { coordsToVector3 } from "./coords-to-vector-3";
  *
  * @example
  * ```tsx
- * import { Canvas, NearCoordinates } from 'react-three-map/maplibre';
+ * import { Canvas, NearCoordinates } from '@wendylabsinc/react-three-map/maplibre';
  *
  * function CityMarkers() {
  *   const locations = [

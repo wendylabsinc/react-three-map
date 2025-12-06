@@ -13,7 +13,7 @@ The `EnhancedPivotControls` component provides an intuitive gizmo for translatin
 ## Basic Usage
 
 ```tsx
-import { Canvas, EnhancedPivotControls, useMap } from 'react-three-map/maplibre';
+import { Canvas, EnhancedPivotControls, useMap } from '@wendylabsinc/react-three-map/maplibre';
 import { Matrix4, Vector3, Euler } from 'three';
 import { useState, useMemo, useCallback } from 'react';
 
@@ -208,7 +208,7 @@ function MultiObjectEditor() {
 After moving an object, you can convert its position back to lat/lng:
 
 ```tsx
-import { vector3ToCoords } from 'react-three-map/maplibre';
+import { vector3ToCoords } from '@wendylabsinc/react-three-map/maplibre';
 
 const onDrag = (m4: Matrix4) => {
   const position = new Vector3().setFromMatrixPosition(m4);

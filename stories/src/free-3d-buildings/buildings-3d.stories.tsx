@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/react';
 // import { Bloom, EffectComposer } from '@react-three/postprocessing'; // Temporarily disabled
 import { levaStore, useControls } from "leva";
 import { Suspense, useEffect } from "react";
-import { Coords } from "react-three-map";
+import { Coords } from "@wendylabsinc/react-three-map";
 // import { ScreenBlend } from "../screen-blend-effect/screen-blend"; // Part of post-processing, temporarily disabled
 import { StoryMap } from "../story-map-storybook";
 import { BatchedBuildings } from "./batched-buildings";

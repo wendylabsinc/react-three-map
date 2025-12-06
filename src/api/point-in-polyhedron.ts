@@ -47,7 +47,7 @@ const BOUNDARY_TOLERANCE = 1e-3;
  *
  * @example
  * ```ts
- * import { isPointInPolyhedron } from 'react-three-map/maplibre';
+ * import { isPointInPolyhedron } from '@wendylabsinc/react-three-map/maplibre';
  * import { BoxGeometry } from 'three';
  *
  * const box = new BoxGeometry(100, 100, 100);
@@ -156,7 +156,7 @@ export function isPointInPolyhedron(
  *
  * @example
  * ```ts
- * import { isCoordsInPolyhedron } from 'react-three-map/maplibre';
+ * import { isCoordsInPolyhedron } from '@wendylabsinc/react-three-map/maplibre';
  *
  * const origin = { latitude: 51.5074, longitude: -0.1278, altitude: 0 };
  * const testPoint = { latitude: 51.5080, longitude: -0.1270, altitude: 25 };
@@ -189,7 +189,7 @@ export function isCoordsInPolyhedron(
  *
  * @example
  * ```ts
- * import { isCoordsInGeoTriangles } from 'react-three-map/maplibre';
+ * import { isCoordsInGeoTriangles } from '@wendylabsinc/react-three-map/maplibre';
  *
  * // Triangles loaded from database
  * const triangles = JSON.parse(storedGeoJson);
@@ -276,7 +276,7 @@ export function isPointInGeoTriangles(
  *
  * @example
  * ```ts
- * import { isPointOnSurface } from 'react-three-map/maplibre';
+ * import { isPointOnSurface } from '@wendylabsinc/react-three-map/maplibre';
  * import { BoxGeometry } from 'three';
  *
  * const box = new BoxGeometry(100, 100, 100);

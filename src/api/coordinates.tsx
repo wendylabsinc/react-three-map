@@ -40,7 +40,7 @@ export interface CoordinatesProps extends PropsWithChildren {
  *
  * @example
  * ```tsx
- * import { Canvas, Coordinates } from 'react-three-map/maplibre';
+ * import { Canvas, Coordinates } from '@wendylabsinc/react-three-map/maplibre';
  *
  * function App() {
  *   return (

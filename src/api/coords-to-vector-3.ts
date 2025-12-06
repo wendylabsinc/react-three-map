@@ -56,7 +56,7 @@ export function averageMercatorScale(originLat: number, pointLat: number, steps 
  *
  * @example
  * ```ts
- * import { coordsToVector3 } from 'react-three-map/maplibre';
+ * import { coordsToVector3 } from '@wendylabsinc/react-three-map/maplibre';
  *
  * const origin = { latitude: 51.5074, longitude: -0.1278 }; // London
  * const point = { latitude: 51.5080, longitude: -0.1270, altitude: 50 };

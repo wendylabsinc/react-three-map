@@ -3,7 +3,7 @@ import Mapbox from "mapbox-gl";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { FC, PropsWithChildren, memo } from "react";
 import Map, { Layer } from 'react-map-gl/mapbox';
-import { Canvas } from 'react-three-map/mapbox';
+import { Canvas } from '@wendylabsinc/react-three-map/mapbox';
 import { StoryMapProps } from '../story-map-storybook';
 
 /** `<Map>` styled for stories */

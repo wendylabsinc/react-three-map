@@ -28,7 +28,7 @@ const fromLngLat = MercatorCoordinate.fromLngLat
  * ```tsx
  * import "maplibre-gl/dist/maplibre-gl.css";
  * import Map from "react-map-gl/maplibre";
- * import { Canvas } from "react-three-map/maplibre";
+ * import { Canvas } from "@wendylabsinc/react-three-map/maplibre";
  *
  * function App() {
  *   return (

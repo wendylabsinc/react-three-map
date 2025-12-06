@@ -61,7 +61,7 @@ export interface CompassOverlayProps {
  * @example Basic usage inside a Map
  * ```tsx
  * import Map from 'react-map-gl/maplibre';
- * import { CompassOverlay } from 'react-three-map/maplibre';
+ * import { CompassOverlay } from '@wendylabsinc/react-three-map/maplibre';
  *
  * function App() {
  *   return (

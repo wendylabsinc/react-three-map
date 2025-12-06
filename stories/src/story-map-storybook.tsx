@@ -7,8 +7,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { FC, PropsWithChildren, ReactElement, ReactNode, cloneElement, isValidElement } from "react";
 import MapboxMap from 'react-map-gl/mapbox';
 import MaplibreMap from 'react-map-gl/maplibre';
-import { Canvas as MapboxCanvas, CanvasProps } from 'react-three-map/mapbox';
-import { Canvas as MaplibreCanvas } from 'react-three-map/maplibre';
+import { Canvas as MapboxCanvas, CanvasProps } from '@wendylabsinc/react-three-map/mapbox';
+import { Canvas as MaplibreCanvas } from '@wendylabsinc/react-three-map/maplibre';
 
 export enum MapProvider {
   maplibre = "maplibre",

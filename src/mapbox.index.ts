@@ -5,13 +5,13 @@
  * Use this when working with Mapbox GL JS and `react-map-gl/mapbox`.
  *
  * @packageDocumentation
- * @module react-three-map
+ * @module @wendylabsinc/react-three-map
  *
  * @example
  * ```tsx
  * import "mapbox-gl/dist/mapbox-gl.css";
  * import Map from "react-map-gl/mapbox";
- * import { Canvas, Coordinates, useMap, coordsToVector3 } from "react-three-map";
+ * import { Canvas, Coordinates, useMap, coordsToVector3 } from "@wendylabsinc/react-three-map";
  *
  * function App() {
  *   return (
@@ -50,7 +50,7 @@ export type { CompassOverlayProps } from './components/compass-overlay';
  *
  * @example
  * ```tsx
- * import { useMap } from "react-three-map";
+ * import { useMap } from "@wendylabsinc/react-three-map";
  *
  * function MyComponent() {
  *   const map = useMap();

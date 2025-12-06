@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Box, Stats } from "@react-three/drei";
 import { useRef, useState } from "react";
-import { Canvas } from "react-three-map/mapbox";
+import { Canvas } from "@wendylabsinc/react-three-map/mapbox";
 import { MathUtils } from "three";
 import { StoryMap } from "./story-map-storybook";
 

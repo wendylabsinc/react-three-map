@@ -1,4 +1,4 @@
-import { Coords } from "react-three-map";
+import { Coords } from "@wendylabsinc/react-three-map";
 
 export interface OverpassElement {
   type: "node" | "way" | "relation";

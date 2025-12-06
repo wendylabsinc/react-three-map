@@ -27,7 +27,7 @@ MapLibre is a free, open-source fork of Mapbox GL JS. No access token required.
 ```tsx
 import "maplibre-gl/dist/maplibre-gl.css";
 import Map from "react-map-gl/maplibre";
-import { Canvas } from "react-three-map/maplibre";
+import { Canvas } from "@wendylabsinc/react-three-map/maplibre";
 
 function App() {
   return (
@@ -61,7 +61,7 @@ Mapbox requires an access token from [mapbox.com](https://www.mapbox.com/).
 ```tsx
 import "mapbox-gl/dist/mapbox-gl.css";
 import Map from "react-map-gl/mapbox";
-import { Canvas } from "react-three-map";
+import { Canvas } from "@wendylabsinc/react-three-map";
 
 function App() {
   return (

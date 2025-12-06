@@ -705,7 +705,7 @@ const AxisArrow: React.FC<{
  *
  * @example
  * ```tsx
- * import { Canvas, EnhancedPivotControls, useMap } from 'react-three-map/maplibre';
+ * import { Canvas, EnhancedPivotControls, useMap } from '@wendylabsinc/react-three-map/maplibre';
  * import { Matrix4, Vector3, Euler } from 'three';
  *
  * function DraggableObject() {
