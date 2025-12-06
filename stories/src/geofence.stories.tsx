@@ -1,14 +1,13 @@
 import { useState, useMemo, useCallback, useRef } from 'react'
 import type { Meta } from '@storybook/react'
 import { StoryMap } from './story-map-storybook'
-import { useControls, button, folder } from 'leva'
+import { useControls, button } from 'leva'
 import * as THREE from 'three'
-import { BoxGeometry, SphereGeometry, Vector3Tuple } from 'three'
+import { BoxGeometry, Vector3Tuple } from 'three'
 import { ThreeEvent } from '@react-three/fiber'
-import { Html, Line } from '@react-three/drei'
+import { Html } from '@react-three/drei'
 import {
   bufferGeometryToWKT,
-  wktToBufferGeometry,
   isCoordsInPolyhedron,
   isPointInPolyhedron,
   bufferGeometryToGeoTriangles,
