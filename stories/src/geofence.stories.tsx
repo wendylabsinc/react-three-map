@@ -8,6 +8,7 @@ import { ThreeEvent } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import {
   bufferGeometryToWKT,
+  wktToBufferGeometry,
   isCoordsInPolyhedron,
   isPointInPolyhedron,
   bufferGeometryToGeoTriangles,
@@ -27,6 +28,7 @@ function GeofenceDemo() {
   const [testPoints, setTestPoints] = useState<TestPoint[]>([])
   const [wktOutput, setWktOutput] = useState<string>('')
   const [triangleCount, setTriangleCount] = useState<number>(0)
+  const [importedGeometry, setImportedGeometry] = useState<THREE.BufferGeometry | null>(null)
   const geofenceRef = useRef<THREE.Mesh>(null)
 
   // Geofence settings
@@ -65,6 +67,26 @@ function GeofenceDemo() {
       setWktOutput(`Error: ${error}`)
     }
   }, [geometry, origin])
+
+  // Import WKT back to geometry (demonstrates round-trip)
+  const handleImportWKT = useCallback(() => {
+    if (!wktOutput || wktOutput.startsWith('Error')) {
+      console.warn('No valid WKT to import. Export first.')
+      return
+    }
+    try {
+      const imported = wktToBufferGeometry(wktOutput, { origin })
+      setImportedGeometry(imported)
+      console.log('Successfully imported WKT back to BufferGeometry')
+    } catch (error) {
+      console.error('Error importing WKT:', error)
+    }
+  }, [wktOutput, origin])
+
+  // Clear imported geometry
+  const clearImported = useCallback(() => {
+    setImportedGeometry(null)
+  }, [])
 
   // Add a random test point
   const addRandomPoint = useCallback(() => {
@@ -118,6 +140,8 @@ function GeofenceDemo() {
   // Leva controls for actions
   useControls('Actions', {
     'Export to WKT': button(handleExportWKT),
+    'Import WKT (Round-trip)': button(handleImportWKT),
+    'Clear Imported': button(clearImported),
     'Add Random Point': button(addRandomPoint),
     'Re-evaluate Points': button(reEvaluatePoints),
     'Clear Points': button(clearPoints),
@@ -186,6 +210,35 @@ function GeofenceDemo() {
           <lineBasicMaterial color="#ffffff" opacity={0.5} transparent />
         </lineSegments>
       </group>
+
+      {/* Imported geometry from WKT (offset to the right for comparison) */}
+      {importedGeometry && (
+        <group position={[width + 50, height / 2, 0]}>
+          <mesh geometry={importedGeometry}>
+            <meshStandardMaterial
+              color="#22c55e"
+              opacity={0.4}
+              transparent
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          <mesh geometry={importedGeometry}>
+            <meshBasicMaterial color="#22c55e" wireframe />
+          </mesh>
+          <Html position={[0, height / 2 + 20, 0]} center>
+            <div style={{
+              background: 'rgba(34, 197, 94, 0.9)',
+              color: '#fff',
+              padding: '5px 10px',
+              borderRadius: '4px',
+              fontFamily: 'monospace',
+              fontSize: '11px',
+            }}>
+              Imported from WKT
+            </div>
+          </Html>
+        </group>
+      )}
 
       {/* Test points */}
       {testPoints.map((point) => (
