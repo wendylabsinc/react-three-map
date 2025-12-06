@@ -11,7 +11,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@wendylabsinc/react-three-map": ["./src/mapbox.index.ts"],
+      "@wendylabsinc/react-three-map/mapbox": ["./src/mapbox.index.ts"],
+      "@wendylabsinc/react-three-map/maplibre": ["./src/maplibre.index.ts"]
     }
   }
 }
