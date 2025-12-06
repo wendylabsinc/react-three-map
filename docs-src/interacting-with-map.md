@@ -7,7 +7,7 @@ This guide covers how to interact with the underlying map from your Three.js com
 The `useMap` hook gives you access to the MapLibre or Mapbox map instance.
 
 ```tsx
-import { useMap } from "react-three-map/maplibre";
+import { useMap } from "@wendylabsinc/react-three-map/maplibre";
 
 function MapController() {
   const map = useMap();
@@ -35,7 +35,7 @@ function MapController() {
 You can subscribe to map events like zoom, pan, and rotation changes.
 
 ```tsx
-import { useMap } from "react-three-map/maplibre";
+import { useMap } from "@wendylabsinc/react-three-map/maplibre";
 import { useEffect, useState } from "react";
 
 function ZoomIndicator() {
@@ -89,7 +89,7 @@ function AnimatedObject() {
 Useful for loading data only for the visible area:
 
 ```tsx
-import { useMap } from "react-three-map/maplibre";
+import { useMap } from "@wendylabsinc/react-three-map/maplibre";
 import { useEffect } from "react";
 
 function VisibleAreaLoader() {
@@ -122,7 +122,7 @@ function VisibleAreaLoader() {
 You can combine map interaction with React Three Fiber hooks:
 
 ```tsx
-import { useMap } from "react-three-map/maplibre";
+import { useMap } from "@wendylabsinc/react-three-map/maplibre";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 

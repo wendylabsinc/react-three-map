@@ -12,8 +12,8 @@ import { MapInstance } from "../core/generic-map";
  *
  * @example
  * ```tsx
- * import { useMap } from 'react-three-map/maplibre';
- * // or: import { useMap } from 'react-three-map'; // for Mapbox
+ * import { useMap } from '@wendylabsinc/react-three-map/maplibre';
+ * // or: import { useMap } from '@wendylabsinc/react-three-map'; // for Mapbox
  *
  * function MyComponent() {
  *   const map = useMap();

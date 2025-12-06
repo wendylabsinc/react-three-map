@@ -33,9 +33,9 @@ export default defineConfig({
       resolve: {
         alias: {
           '@': resolve(__dirname, './src'),
-          'react-three-map/maplibre': resolve(__dirname, './src/maplibre.index.ts'),
-          'react-three-map/mapbox': resolve(__dirname, './src/mapbox.index.ts'),
-          'react-three-map': resolve(__dirname, './src/mapbox.index.ts'),
+          '@wendylabsinc/react-three-map/maplibre': resolve(__dirname, './src/maplibre.index.ts'),
+          '@wendylabsinc/react-three-map/mapbox': resolve(__dirname, './src/mapbox.index.ts'),
+          '@wendylabsinc/react-three-map': resolve(__dirname, './src/mapbox.index.ts'),
         }
       }
     }

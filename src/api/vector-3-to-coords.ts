@@ -23,7 +23,7 @@ import { earthRadius } from "../core/earth-radius";
  *
  * @example
  * ```ts
- * import { vector3ToCoords, coordsToVector3 } from 'react-three-map/maplibre';
+ * import { vector3ToCoords, coordsToVector3 } from '@wendylabsinc/react-three-map/maplibre';
  *
  * const origin = { latitude: 51.5074, longitude: -0.1278 };
  *

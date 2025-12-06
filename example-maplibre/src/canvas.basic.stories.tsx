@@ -2,7 +2,7 @@ import { useFrame, Vector3 } from "@react-three/fiber";
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FC, useRef, useState } from "react";
 import Map from 'react-map-gl/maplibre';
-import { Canvas } from "react-three-map/maplibre";
+import { Canvas } from "@wendylabsinc/react-three-map/maplibre";
 import { Mesh } from "three";
 
 export default { title: 'MapLibre Examples/Canvas' }

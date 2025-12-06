@@ -93,8 +93,8 @@ import React, { useRef, useState } from 'react'
 import { useFrame } from "@react-three/fiber"
 import { useRef, useState } from "react"
 import Map from "react-map-gl/maplibre"
-import { Canvas } from "react-three-map/maplibre" 
-// import { Canvas } from "react-three-map" // if you are using MapBox
+import { Canvas } from "@wendylabsinc/react-three-map/maplibre"
+// import { Canvas } from "@wendylabsinc/react-three-map" // if you are using MapBox
 
 function BasicExample() {
   return <Map
@@ -140,8 +140,8 @@ Same as in `@react-three/fiber`, the `<Canvas>` object is where you start to def
 ```tsx
 import "maplibre-gl/dist/maplibre-gl.css"
 import Map from "react-map-gl/maplibre"
-import { Canvas } from 'react-three-map/maplibre'
-// import { Canvas } from "react-three-map" // if you are using MapBox
+import { Canvas } from '@wendylabsinc/react-three-map/maplibre'
+// import { Canvas } from "@wendylabsinc/react-three-map" // if you are using MapBox
 
 const App = () => (
   <Map 
@@ -202,7 +202,7 @@ This component allows you to have 3D objects at different coordinates.
 
 
 ```tsx
-import { Canvas, Coordinates } from 'react-three-map'
+import { Canvas, Coordinates } from '@wendylabsinc/react-three-map'
 
 <Canvas latitude={51} longitude={0}>
   <Coordinates latitude={50} longitude={0}>
@@ -232,11 +232,11 @@ Check the story to see the difference between the two or check #102 for more inf
 
 ### useMap
 
-Access the map from inside `react-three-map`.
+Access the map from inside `@wendylabsinc/react-three-map`.
 
 ```tsx
-import { useMap } from "react-three-map";
-// import { useMap } from "react-three-map/maplibre"; if you use maplibre
+import { useMap } from "@wendylabsinc/react-three-map";
+// import { useMap } from "@wendylabsinc/react-three-map/maplibre"; if you use maplibre
 const Component = () => {
   const map = useMap();
   return <>...</>
@@ -288,7 +288,7 @@ These utilities enable creating, storing, and querying 3D geofences. Convert Thr
 Converts a Three.js BufferGeometry to PostGIS `POLYHEDRALSURFACE Z` WKT format for database storage.
 
 ```tsx
-import { bufferGeometryToWKT } from 'react-three-map/maplibre';
+import { bufferGeometryToWKT } from '@wendylabsinc/react-three-map/maplibre';
 import { BoxGeometry } from 'three';
 
 // Define the geofence origin (Canvas position)
@@ -317,7 +317,7 @@ Returns a WKT string in `POLYHEDRALSURFACE Z ((...))` format.
 Parses a PostGIS `POLYHEDRALSURFACE Z` WKT string back into a Three.js BufferGeometry.
 
 ```tsx
-import { wktToBufferGeometry } from 'react-three-map/maplibre';
+import { wktToBufferGeometry } from '@wendylabsinc/react-three-map/maplibre';
 
 // Load WKT from database
 const wkt = await fetchGeofenceFromDB();
@@ -344,7 +344,7 @@ Returns a Three.js `BufferGeometry`.
 Tests whether a geographic coordinate is inside a 3D geofence volume.
 
 ```tsx
-import { isCoordsInPolyhedron } from 'react-three-map/maplibre';
+import { isCoordsInPolyhedron } from '@wendylabsinc/react-three-map/maplibre';
 import { BoxGeometry } from 'three';
 
 const origin = { latitude: 51.5074, longitude: -0.1278, altitude: 0 };
@@ -386,7 +386,7 @@ Returns `{ inside: boolean, intersectionCount: number }`.
 A gizmo component for translating and rotating 3D objects in map space. Provides intuitive controls with translation arrows (red=X, green=Y, blue=Z) and rotation rings for each axis.
 
 ```tsx
-import { Canvas, EnhancedPivotControls, useMap } from 'react-three-map/maplibre';
+import { Canvas, EnhancedPivotControls, useMap } from '@wendylabsinc/react-three-map/maplibre';
 import { Matrix4, Vector3, Euler } from 'three';
 import { useMemo, useState, useCallback } from 'react';
 
@@ -461,7 +461,7 @@ function DraggableObject() {
 A 3D compass component that displays cardinal directions (N, S, E, W) and vertical orientation (Up, Down). By default renders as a HUD overlay that tracks the camera.
 
 ```tsx
-import { Canvas, Compass3D } from 'react-three-map/maplibre';
+import { Canvas, Compass3D } from '@wendylabsinc/react-three-map/maplibre';
 
 // Basic usage - auto-syncs with camera as HUD overlay
 function MapWithCompass() {
@@ -515,7 +515,7 @@ A screen-space compass overlay that renders in its own React Three Fiber canvas.
 
 ```tsx
 import Map from 'react-map-gl/maplibre';
-import { CompassOverlay } from 'react-three-map/maplibre';
+import { CompassOverlay } from '@wendylabsinc/react-three-map/maplibre';
 
 function App() {
   return (

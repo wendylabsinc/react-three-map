@@ -16,7 +16,7 @@ react-three-map provides two components for positioning objects at different coo
 The `Coordinates` component creates a separate, properly-scaled scene at each location. Use this when objects are far apart.
 
 ```tsx
-import { Canvas, Coordinates } from "react-three-map/maplibre";
+import { Canvas, Coordinates } from "@wendylabsinc/react-three-map/maplibre";
 
 function WorldMarkers() {
   return (
@@ -54,7 +54,7 @@ function WorldMarkers() {
 The `NearCoordinates` component is more performant but only translates position without scale correction. Use this for objects within the same city or region.
 
 ```tsx
-import { Canvas, NearCoordinates } from "react-three-map/maplibre";
+import { Canvas, NearCoordinates } from "@wendylabsinc/react-three-map/maplibre";
 
 function CityMarkers() {
   const locations = [
@@ -93,7 +93,7 @@ For more control, use the utility functions directly:
 Converts geographic coordinates to a 3D position relative to an origin.
 
 ```tsx
-import { coordsToVector3 } from "react-three-map/maplibre";
+import { coordsToVector3 } from "@wendylabsinc/react-three-map/maplibre";
 
 function DynamicMarker({ targetLat, targetLng }) {
   const origin = { latitude: 51.5074, longitude: -0.1278 };
@@ -115,7 +115,7 @@ function DynamicMarker({ targetLat, targetLng }) {
 Converts a 3D position back to geographic coordinates. Useful after user interactions.
 
 ```tsx
-import { vector3ToCoords, coordsToVector3 } from "react-three-map/maplibre";
+import { vector3ToCoords, coordsToVector3 } from "@wendylabsinc/react-three-map/maplibre";
 import { useState } from "react";
 
 function DraggableMarker() {

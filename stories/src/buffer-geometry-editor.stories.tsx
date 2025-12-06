@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import type { Meta } from '@storybook/react'
 import { StoryMap } from './story-map-storybook'
-import { Coordinates } from 'react-three-map'
+import { Coordinates } from '@wendylabsinc/react-three-map'
 import { Box, Sphere, Cone, Plane } from '@react-three/drei'
 import { useControls, button } from 'leva'
 import * as THREE from 'three'

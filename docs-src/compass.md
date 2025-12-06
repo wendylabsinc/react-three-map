@@ -7,7 +7,7 @@ The `Compass3D` component displays a 3D compass that shows cardinal directions (
 The simplest way to add a compass is to use the default overlay mode, which automatically positions the compass in the corner of your canvas:
 
 ```tsx
-import { Canvas, Compass3D } from 'react-three-map/maplibre';
+import { Canvas, Compass3D } from '@wendylabsinc/react-three-map/maplibre';
 import Map from 'react-map-gl/maplibre';
 
 function App() {
@@ -63,7 +63,7 @@ Adjust the compass size and proportions:
 For a compass that exists in 3D world space rather than as a screen overlay, disable overlay mode and provide manual bearing/pitch values:
 
 ```tsx
-import { Canvas, Compass3D, useMap } from 'react-three-map/maplibre';
+import { Canvas, Compass3D, useMap } from '@wendylabsinc/react-three-map/maplibre';
 import { useState, useEffect } from 'react';
 
 function WorldSpaceCompass() {
@@ -119,7 +119,7 @@ The compass follows the library's axis convention:
 For advanced use cases, the `CompassOverlay` component renders the compass in a separate React Three Fiber canvas that floats above the map. This can be useful when you want complete control over the compass rendering:
 
 ```tsx
-import { CompassOverlay } from 'react-three-map';
+import { CompassOverlay } from '@wendylabsinc/react-three-map';
 import Map, { useMap } from 'react-map-gl/maplibre';
 
 function App() {

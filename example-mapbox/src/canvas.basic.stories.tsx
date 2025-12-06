@@ -4,7 +4,7 @@ import Mapbox from "mapbox-gl";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { FC, PropsWithChildren, useRef, useState } from "react";
 import Map from 'react-map-gl/mapbox';
-import { Canvas } from "react-three-map";
+import { Canvas } from "@wendylabsinc/react-three-map";
 import { Mesh } from "three";
 
 export default { title: 'Mapbox Examples/Canvas' }

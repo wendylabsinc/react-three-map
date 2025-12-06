@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
-import { Compass3D, CompassOverlay } from "react-three-map";
+import { Compass3D, CompassOverlay } from "@wendylabsinc/react-three-map";
 import { StoryMap } from "./story-map-storybook";
 
 // Main story component

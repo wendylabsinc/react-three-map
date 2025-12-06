@@ -3,7 +3,7 @@ import { Billboard, Line, Plane, Ring, Sphere, useHelper } from "@react-three/dr
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
 import { RefObject, memo, useEffect, useMemo, useRef } from "react";
-import { useMap } from "react-three-map";
+import { useMap } from "@wendylabsinc/react-three-map";
 import { getPosition } from "suncalc";
 import { BufferAttribute, BufferGeometry, CameraHelper, Color, MathUtils, OrthographicCamera, PCFSoftShadowMap, Vector3Tuple } from "three";
 import { ScreenSizer } from "../screen-sizer";

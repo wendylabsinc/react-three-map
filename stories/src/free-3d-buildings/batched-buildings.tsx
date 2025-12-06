@@ -1,6 +1,6 @@
 import { Object3DNode, extend, useFrame } from "@react-three/fiber";
 import { memo, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Coords, coordsToVector3 } from "react-three-map";
+import { Coords, coordsToVector3 } from "@wendylabsinc/react-three-map";
 import { suspend } from "suspend-react";
 import { BatchedMesh, Color, ExtrudeGeometry, MathUtils, Shape, Vector3Tuple } from "three";
 import { BatchedStandardMaterial } from "./batched-standard-material/batched-standard-material";

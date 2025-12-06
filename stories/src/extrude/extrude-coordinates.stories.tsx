@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/react';
 import { Environment, Extrude, Html } from "@react-three/drei";
 import { useMemo } from "react";
-import { Coords, coordsToVector3 } from "react-three-map";
+import { Coords, coordsToVector3 } from "@wendylabsinc/react-three-map";
 import { MathUtils, Shape, Vector2Tuple } from "three";
 import { StoryMap } from "../story-map-storybook";
 import { Chaillot } from "./chaillot";

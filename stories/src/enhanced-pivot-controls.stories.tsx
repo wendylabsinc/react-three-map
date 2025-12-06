@@ -3,10 +3,10 @@ import { useControls } from "leva";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Marker as MapboxMarker } from "react-map-gl/mapbox";
 import { Marker as MaplibreMarker } from "react-map-gl/maplibre";
-import { useMap, vector3ToCoords } from "react-three-map";
+import { useMap, vector3ToCoords } from "@wendylabsinc/react-three-map";
 import { Euler, Matrix4, Vector3, Vector3Tuple } from "three";
 import { StoryMap } from "./story-map-storybook";
-import { EnhancedPivotControls } from "react-three-map";
+import { EnhancedPivotControls } from "@wendylabsinc/react-three-map";
 
 export function EnhancedPivotStory() {
   const origin = useControls({

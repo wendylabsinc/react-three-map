@@ -3,7 +3,7 @@ import { Box } from "@react-three/drei";
 import { Vector3 } from "@react-three/fiber";
 import { levaStore, useControls } from "leva";
 import { FC, useEffect, useState } from "react";
-import { Coordinates, CoordinatesProps, NearCoordinates } from "react-three-map";
+import { Coordinates, CoordinatesProps, NearCoordinates } from "@wendylabsinc/react-three-map";
 import { ColorRepresentation } from "three";
 import { StoryMap } from "./story-map-storybook";
 

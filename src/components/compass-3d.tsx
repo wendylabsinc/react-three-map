@@ -160,7 +160,7 @@ export interface Compass3DProps {
  *
  * @example Basic compass synced with map
  * ```tsx
- * import { Canvas, Compass3D, useMap } from 'react-three-map/maplibre';
+ * import { Canvas, Compass3D, useMap } from '@wendylabsinc/react-three-map/maplibre';
  *
  * function MapWithCompass() {
  *   const map = useMap();
