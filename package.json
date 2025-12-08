@@ -1,6 +1,6 @@
 {
   "name": "@wendylabsinc/react-three-map",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A React wrapper library for Google Maps 3D with React Three Fiber integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
