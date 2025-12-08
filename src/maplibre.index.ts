@@ -39,8 +39,8 @@ export { EnhancedPivotControls } from './components/enhanced-pivot-controls';
 export type { PivotControlsProps } from './components/enhanced-pivot-controls';
 export { Compass3D } from './components/compass-3d';
 export type { Compass3DProps } from './components/compass-3d';
-export { CompassOverlay } from './components/compass-overlay';
-export type { CompassOverlayProps } from './components/compass-overlay';
+export { CompassOverlay } from './maplibre/compass-overlay';
+export type { CompassOverlayProps } from './maplibre/compass-overlay';
 
 /**
  * Hook to access the MapLibre GL JS map instance from within a Canvas.

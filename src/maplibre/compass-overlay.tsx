@@ -1,11 +1,11 @@
 /**
  * @packageDocumentation
- * Screen-space compass overlay component.
+ * Screen-space compass overlay component for MapLibre.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useMap } from 'react-map-gl/maplibre';
-import { Compass3D } from './compass-3d';
+import { Compass3D } from '../components/compass-3d';
 
 /**
  * Props for the CompassOverlay component.
