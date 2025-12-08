@@ -68,19 +68,7 @@ For API documentation, see the [TypeDoc](https://wendylabsinc.github.io/react-th
 
 ## What does it look like?
 
-
-<table>
-  <tbody>
-    <tr>
-      <td>Let's build the same <code>react-three-fiber</code> basic example, but now it can be inside a map. (<a href="https://codesandbox.io/p/sandbox/react-three-map-gettings-started-dhw34w">live demo</a>).</td>
-      <td>
-        <a href="https://codesandbox.io/p/sandbox/react-three-map-gettings-started-dhw34w">
-          <img src="docs/basic-app.gif" />
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
+Let's build the same `react-three-fiber` basic example, but now it can be inside a map. Check out the [live demo on CodeSandbox](https://codesandbox.io/p/sandbox/react-three-map-gettings-started-dhw34w).
 
 1. Import `Canvas` from `react-three-map` instead of `@react-three/fiber`.
 2. Give it a latitude and longitude so it knows where to position the scene in the map.
@@ -196,7 +184,7 @@ Therefore, the following `<Canvas>` props are ignored:
 
 ### Coordinates
 
-[![Coordinates example](docs/coordinates.png)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/multi-coordinates--default)
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/multi-coordinates--default)
 
 This component allows you to have 3D objects at different coordinates.
 
