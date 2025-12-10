@@ -1,5 +1,11 @@
 # react-three-map
 
+## 1.0.9
+
+### Patch Changes
+
+- Move coord store updates into effects to stop setState during render warnings (InitR3M/AxisArrow).
+
 ## 1.0.8
 
 ### Patch Changes
