@@ -1,5 +1,5 @@
 import { _roots, useThree } from "@react-three/fiber";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { Coords } from "../api/coords";
 
 // Use the store type from @react-three/fiber's internal _roots to avoid zustand version mismatch
@@ -13,19 +13,20 @@ export function useCoords() {
 export function useSetCoords({longitude, latitude, altitude}: Coords) {
   
   const canvas = useThree(s => s.gl.domElement);
-  useMemo(()=>{
-    const store = _roots.get(canvas)!.store; // eslint-disable-line @typescript-eslint/no-non-null-assertion
-    const coords : Coords = { longitude, latitude, altitude };
-    setCoords(store, coords);
-  }, [longitude, latitude, altitude]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const root = _roots.get(canvas);
+    if (!root) return;
+    const coords: Coords = { longitude, latitude, altitude };
+    setCoords(root.store, coords);
+  }, [canvas, longitude, latitude, altitude]);
 }
 
 export function useSetRootCoords(store: FiberStore, {
   longitude, latitude, altitude
 }: Coords) {
-  useMemo(()=>{
-    setCoords(store, {longitude, latitude, altitude});
-  }, [longitude, latitude, altitude]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setCoords(store, { longitude, latitude, altitude });
+  }, [store, longitude, latitude, altitude]);
 }
 
 export function setCoords(store: FiberStore, coords: Coords) {
