@@ -76,9 +76,11 @@ export const Coordinates = memo<CoordinatesProps>(({
   const r3m = useR3M();
 
   const origin = useCoordsToMatrix({
-    latitude, longitude, altitude, fromLngLat: r3m.fromLngLat,
+    latitude, longitude, altitude, fromLngLat: r3m?.fromLngLat,
   });
 
+
+  if (!r3m) return null;
 
   return <>{createPortal(<>
     <RenderAtCoords r3m={r3m} origin={origin} />

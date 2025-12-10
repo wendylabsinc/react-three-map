@@ -2,7 +2,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { memo, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { Matrix4Tuple, PerspectiveCamera } from "three";
 import { Coords } from "../../api/coords";
-import { MapInstance } from "../generic-map";
+import { FromLngLat, MapInstance } from "../generic-map";
 import { syncCamera } from "../sync-camera";
 import { useCoordsToMatrix } from "../use-coords-to-matrix";
 import { useFunction } from "../use-function";
@@ -14,11 +14,12 @@ interface SyncCameraFCProps extends Coords {
   manualRender?: boolean,
   onReady?: () => void,
   map: MapInstance,
+  fromLngLat: FromLngLat,
 }
 
 /** React Component (FC) to sync the Three camera with the map provider */
 export const SyncCameraFC = memo<SyncCameraFCProps>(({
-  latitude, longitude, altitude = 0, setOnRender, manualRender, onReady, map
+  latitude, longitude, altitude = 0, setOnRender, manualRender, onReady, map, fromLngLat
 }) => {
 
   const mapCanvas = map.getCanvas();
@@ -35,7 +36,12 @@ export const SyncCameraFC = memo<SyncCameraFCProps>(({
   const setSize = useThree(s => s.setSize);
   const set = useThree(s => s.set);
 
-  const origin = useCoordsToMatrix({ latitude, longitude, altitude, fromLngLat: r3m.fromLngLat });
+  const origin = useCoordsToMatrix({
+    latitude,
+    longitude,
+    altitude,
+    fromLngLat: r3m?.fromLngLat ?? fromLngLat,
+  });
 
   const ready = useRef(false);
 
@@ -46,6 +52,7 @@ export const SyncCameraFC = memo<SyncCameraFCProps>(({
   })
 
   useFrame(() => {
+    if (!r3m) return;
     syncCamera(camera, origin, r3m.viewProjMx)
 
     if (manualRender) gl.render(scene, camera);
@@ -58,6 +65,7 @@ export const SyncCameraFC = memo<SyncCameraFCProps>(({
   }, -Infinity)
 
   const onRender = useFunction((viewProjMx: Matrix4Tuple | {defaultProjectionData: {mainMatrix: Record<string, number>}}) => {
+    if (!r3m) return;
     map.triggerRepaint = triggerRepaintOff;
 
     if (threeCanvas.width !== mapCanvas.width || threeCanvas.height !== mapCanvas.height) {

@@ -48,6 +48,7 @@ export const CanvasPortal = memo<CanvasPortalProps>(({
       setOnRender={setOnRender}
       onReady={onReady}
       map={map}
+      fromLngLat={fromLngLat}
     />
     {ready && children}
   </Canvas>

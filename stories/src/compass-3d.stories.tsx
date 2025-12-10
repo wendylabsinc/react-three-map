@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
-import { Compass3D, CompassOverlay } from "@wendylabsinc/react-three-map";
+import { Compass3D, CompassOverlay as MapboxCompassOverlay } from "@wendylabsinc/react-three-map";
+import { CompassOverlay as MaplibreCompassOverlay } from "@wendylabsinc/react-three-map/maplibre";
 import { StoryMap } from "./story-map-storybook";
 
 // Main story component
@@ -119,16 +120,17 @@ export function TerrainWith3DCompass() {
         latitude={origin.latitude}
         longitude={origin.longitude}
         zoom={11}
-        pitch={60}
-        bearing={0}
-        maplibreStyle={maplibreStyle}
-        mapboxStyle={mapboxStyle}
-        mapChildren={<CompassOverlay />}
-      >
-        {/* No other 3D objects in the scene, just the terrain */}
-      </StoryMap>
-    </div>
-  );
+      pitch={60}
+      bearing={0}
+      maplibreStyle={maplibreStyle}
+      mapboxStyle={mapboxStyle}
+      mapboxChildren={<MapboxCompassOverlay />}
+      maplibreChildren={<MaplibreCompassOverlay />}
+    >
+      {/* No other 3D objects in the scene, just the terrain */}
+    </StoryMap>
+  </div>
+);
 }
 
 // Standalone compass story for testing
