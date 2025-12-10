@@ -94,15 +94,22 @@ export function CompassOverlay({
   className,
   overlay = true,
 }: CompassOverlayProps) {
-  const { current: map } = useMap();
+  const maps = useMap();
+  const map = useMemo(() => {
+    const collection = maps ? Object.values(maps).filter(Boolean) : [];
+    // Prefer explicit current/default keys, then fall back to the first map in the collection
+    return (maps as any)?.current || (maps as any)?.default || collection[0];
+  }, [maps]);
   const [bearing, setBearing] = useState(0);
   const [pitch, setPitch] = useState(0);
   const mapRef = useRef(map);
   mapRef.current = map;
 
   useEffect(() => {
-    if (!mapRef.current) return;
-    const m = mapRef.current;
+    const mapLike = mapRef.current;
+    if (!mapLike) return;
+    // MapRef exposes getMap(); Map exposes bearing/pitch directly
+    const m = typeof (mapLike as any).getMap === 'function' ? (mapLike as any).getMap() : mapLike;
     const update = () => {
       setBearing(m.getBearing());
       setPitch(m.getPitch());
@@ -111,12 +118,14 @@ export function CompassOverlay({
     m.on('move', update);
     m.on('rotate', update);
     m.on('pitch', update);
+    m.on('render', update);
     return () => {
       m.off('move', update);
       m.off('rotate', update);
       m.off('pitch', update);
+      m.off('render', update);
     };
-  }, []);
+  }, [map]);
 
   // Camera looking down from above; we keep the default up vector so screen-up aligns to world +Y.
   const camera = useMemo(() => ({

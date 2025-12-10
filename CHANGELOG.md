@@ -1,5 +1,13 @@
 # react-three-map
 
+## 1.0.8
+
+### Patch Changes
+
+- Fix MapLibre compass overlay to subscribe to the active map and keep bearing/pitch in sync.
+- Guard R3M initialization to avoid setState during render and handle absent `fromLngLat` safely.
+- Use provider-specific compass overlays in Storybook so MapLibre stories stay interactive.
+
 ## 1.0.0
 
 ### Major Changes

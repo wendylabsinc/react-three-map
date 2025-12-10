@@ -1,5 +1,5 @@
 import { _roots, useThree } from "@react-three/fiber";
-import { useState } from "react";
+import { useEffect } from "react";
 import { Matrix4, Matrix4Tuple } from "three";
 import { FromLngLat, MapInstance } from "./generic-map";
 
@@ -15,7 +15,7 @@ export interface R3M<T extends MapInstance = MapInstance> {
 }
 
 export function useR3M<T extends MapInstance> () {
-  const r3m = useThree(s=>(s as any).r3m) as R3M<T>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  const r3m = useThree(s=>(s as any).r3m) as R3M<T> | undefined; // eslint-disable-line @typescript-eslint/no-explicit-any
   return r3m;
 }
 
@@ -24,11 +24,13 @@ export function useInitR3M<T extends MapInstance>(props: {
   map: T; fromLngLat: FromLngLat;
 }) {
   const canvas = useThree(s => s.gl.domElement);
-  // to run only once
-  useState(()=>{
-    const store = _roots.get(canvas)!.store; // eslint-disable-line @typescript-eslint/no-non-null-assertion
-    initR3M({...props, store})
-  })
+  const { map, fromLngLat } = props;
+  // Initialise R3M after the canvas exists to avoid setState during render
+  useEffect(() => {
+    const root = _roots.get(canvas);
+    if (!root) return;
+    initR3M({ map, fromLngLat, store: root.store });
+  }, [canvas, map, fromLngLat]);
 }
 
 export function initR3M<T extends MapInstance>({store, ...props}: {
