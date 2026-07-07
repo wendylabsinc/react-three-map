@@ -556,6 +556,7 @@ export function EnhancedPivotBufferGeometryExamples() {
               annotations={annotations}
               disableTranslations={lockTranslations}
               disableRotations={lockRotations}
+              onDrag={(nextMatrix) => handleDrag(index, nextMatrix)}
             />
             <mesh matrixAutoUpdate={false} matrix={matrix}>
               {bufferGeometryExamples[index].geometry}
