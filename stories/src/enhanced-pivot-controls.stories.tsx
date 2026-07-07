@@ -4,7 +4,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Marker as MapboxMarker } from "react-map-gl/mapbox";
 import { Marker as MaplibreMarker } from "react-map-gl/maplibre";
 import { useMap, vector3ToCoords } from "@wendylabsinc/react-three-map";
-import { Euler, Matrix4, Vector3, Vector3Tuple } from "three";
+import { Euler, Matrix4, Quaternion, Vector3, Vector3Tuple } from "three";
 import { StoryMap } from "./story-map-storybook";
 import { EnhancedPivotControls } from "@wendylabsinc/react-three-map";
 
@@ -450,9 +450,128 @@ export function EnhancedPivotWithScreenSizer() {
   </div>
 }
 
-export default {
-  title: 'PivotControls',
+const bufferGeometryExamples = [
+  {
+    name: 'Box BufferGeometry',
+    color: '#ff6b6b',
+    position: [-400, 120, -120] as Vector3Tuple,
+    rotation: [0, Math.PI / 10, 0] as Vector3Tuple,
+    scale: 1,
+    geometry: <boxGeometry args={[140, 140, 140]} />
+  },
+  {
+    name: 'Sphere BufferGeometry',
+    color: '#4dabf7',
+    position: [0, 160, 0] as Vector3Tuple,
+    rotation: [Math.PI / 8, Math.PI / 6, 0] as Vector3Tuple,
+    scale: 1,
+    geometry: <sphereGeometry args={[110, 48, 32]} />
+  },
+  {
+    name: 'Torus Knot BufferGeometry',
+    color: '#ffd43b',
+    position: [420, 100, 140] as Vector3Tuple,
+    rotation: [-Math.PI / 10, 0, Math.PI / 8] as Vector3Tuple,
+    scale: 1,
+    geometry: <torusKnotGeometry args={[90, 26, 120, 20]} />
+  }
+];
+
+const buildMatrix = (position: Vector3Tuple, rotation: Vector3Tuple, uniformScale: number) => {
+  const matrix = new Matrix4();
+  matrix.compose(
+    new Vector3(...position),
+    new Quaternion().setFromEuler(new Euler(...rotation)),
+    new Vector3(uniformScale, uniformScale, uniformScale)
+  );
+  return matrix;
 };
 
-export const Default = EnhancedPivotStory;
+const recomposeWithScale = (matrix: Matrix4, baseScale: number, uniformScale: number) => {
+  const position = new Vector3();
+  const quaternion = new Quaternion();
+  const scale = new Vector3();
+  matrix.decompose(position, quaternion, scale);
+  const nextScale = baseScale * uniformScale;
+  const next = new Matrix4();
+  next.compose(position, quaternion, new Vector3(nextScale, nextScale, nextScale));
+  return next;
+};
+
+export function EnhancedPivotBufferGeometryExamples() {
+  const {
+    controlScale,
+    annotations,
+    lockTranslations,
+    lockRotations,
+    uniformScale
+  } = useControls('BufferGeometry Examples', {
+    controlScale: { value: 420, min: 100, max: 900, step: 20, label: 'Control Scale' },
+    annotations: { value: true, label: 'Show Angle Annotations' },
+    lockTranslations: { value: false, label: 'Lock Translations' },
+    lockRotations: { value: false, label: 'Lock Rotations' },
+    uniformScale: { value: 1, min: 0.5, max: 3, step: 0.1, label: 'Mesh Scale' }
+  });
+  const [matrices, setMatrices] = useState<Matrix4[]>(() =>
+    bufferGeometryExamples.map((example) =>
+      buildMatrix(example.position, example.rotation, example.scale)
+    )
+  );
+
+  useEffect(() => {
+    setMatrices((prev) =>
+      prev.map((matrix, index) =>
+        recomposeWithScale(matrix, bufferGeometryExamples[index].scale, uniformScale)
+      )
+    );
+  }, [uniformScale]);
+
+  const handleDrag = useCallback((index: number, nextMatrix: Matrix4) => {
+    setMatrices((prev) =>
+      prev.map((matrix, matrixIndex) =>
+        matrixIndex === index ? nextMatrix.clone() : matrix
+      )
+    );
+  }, []);
+
+  return (
+    <div style={{ height: '100vh' }}>
+      <StoryMap
+        latitude={40.01}
+        longitude={-105.27}
+        zoom={12}
+        pitch={45}
+        bearing={20}
+        canvas={{ altitude: 0 }}
+        maplibreStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+      >
+        <ambientLight intensity={0.9} />
+        <directionalLight position={[300, 400, 200]} intensity={0.7} />
+        <gridHelper args={[2000, 20, '#666666', '#333333']} />
+        {matrices.map((matrix, index) => (
+          <group key={bufferGeometryExamples[index].name}>
+            <EnhancedPivotControls
+              matrix={matrix}
+              scale={controlScale}
+              annotations={annotations}
+              disableTranslations={lockTranslations}
+              disableRotations={lockRotations}
+            />
+            <mesh matrixAutoUpdate={false} matrix={matrix}>
+              {bufferGeometryExamples[index].geometry}
+              <meshStandardMaterial color={bufferGeometryExamples[index].color} />
+            </mesh>
+          </group>
+        ))}
+      </StoryMap>
+    </div>
+  );
+}
+
+export default {
+  title: 'EnhancedPivotControls',
+};
+
+export const MapBasedControls = EnhancedPivotStory;
 export const WithScreenSizer = EnhancedPivotWithScreenSizer;
+export const BufferGeometryPlayground = EnhancedPivotBufferGeometryExamples;

@@ -17,7 +17,7 @@ import {
   Raycaster,
   Vector2
 } from 'three'
-import { Html } from '@react-three/drei'
+import { Billboard, Text } from '@react-three/drei'
 
 // Extend Three.js objects for React Three Fiber
 extend({ Group, Matrix4, Mesh, MeshBasicMaterial, TubeGeometry })
@@ -392,6 +392,15 @@ const AxisRotator: React.FC<{
   }, [curve, segments, radius, rotationThickness])
   
   const dragStartRef = useRef<{ x: number; y: number; rotation: Quaternion }>()
+  const annotationPosition = useMemo(
+    () => direction.clone().multiplyScalar(radius * 1.2),
+    [direction, radius]
+  )
+  const annotationFontSize = radius * 0.12
+  const annotationLabel = useMemo(
+    () => `${(angle * 180 / Math.PI).toFixed(1)}°`,
+    [angle]
+  )
   
   const handlePointerDown = (e: ThreeEvent<PointerEvent>) => {
     if (!enabled) return
@@ -519,20 +528,19 @@ const AxisRotator: React.FC<{
       
       {/* Annotation */}
       {annotations && dragging && (
-        <Html position={direction.clone().multiplyScalar(radius * 1.2)}>
-          <div
-            style={{
-              background: 'rgba(0,0,0,0.8)',
-              color: 'white',
-              padding: '2px 6px',
-              borderRadius: '3px',
-              fontSize: '11px',
-              whiteSpace: 'nowrap'
-            }}
+        <Billboard position={annotationPosition} follow>
+          <Text
+            renderOrder={10}
+            fontSize={annotationFontSize}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth="20%"
+            outlineColor="black"
           >
-            {(angle * 180 / Math.PI).toFixed(1)}°
-          </div>
-        </Html>
+            {annotationLabel}
+          </Text>
+        </Billboard>
       )}
     </group>
   )
