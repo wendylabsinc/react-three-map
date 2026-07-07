@@ -16,16 +16,20 @@ jobs:
       contents: write #  to create release (changesets/action)
       issues: write # to post issue comments (changesets/action)
       pull-requests: write #  to create pull request (changesets/action)
+      id-token: write # for npm trusted publishing (OIDC)
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          # node 24 ships npm >= 11.5.1, required for npm trusted publishing
+          node-version: '24'
       - run: npm ci
+      # changesets/action writes a token-based ~/.npmrc when none exists;
+      # pre-create one so npm falls back to OIDC trusted publishing instead
+      - run: echo "registry=https://registry.npmjs.org/" > "$HOME/.npmrc"
       - id: changesets
         uses: changesets/action@v1
         with:
           publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
