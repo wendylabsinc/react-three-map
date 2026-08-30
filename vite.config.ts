@@ -54,6 +54,7 @@ export default defineConfig({
         rollupOptions: {
           output: !isES ? undefined : { sourcemap: true, preserveModules: true },
           external: [
+            "@react-three/drei",
             "@react-three/fiber",
             "maplibre-gl",
             "mapbox-gl",

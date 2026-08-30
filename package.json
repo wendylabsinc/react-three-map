@@ -1,11 +1,35 @@
 {
   "name": "@wendylabsinc/react-three-map",
   "version": "1.0.10",
-  "description": "A React wrapper library for Google Maps 3D with React Three Fiber integration",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "React Three Fiber integration for MapLibre GL JS and Mapbox GL JS",
+  "main": "dist/cjs/main.js",
+  "module": "dist/es/main.mjs",
+  "types": "dist/types/mapbox.index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/mapbox.index.d.ts",
+      "import": "./dist/es/main.mjs",
+      "require": "./dist/cjs/main.js",
+      "default": "./dist/es/main.mjs"
+    },
+    "./mapbox": {
+      "types": "./dist/types/mapbox.index.d.ts",
+      "import": "./dist/es/main.mjs",
+      "require": "./dist/cjs/main.js",
+      "default": "./dist/es/main.mjs"
+    },
+    "./maplibre": {
+      "types": "./dist/maplibre/types/maplibre.index.d.ts",
+      "import": "./dist/maplibre/es/main.mjs",
+      "require": "./dist/maplibre/cjs/main.js",
+      "default": "./dist/maplibre/es/main.mjs"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
-    "dist"
+    "dist",
+    "maplibre",
+    "mapbox"
   ],
   "sideEffects": false,
   "repository": {
@@ -42,7 +66,8 @@
     "typedoc:watch": "typedoc --watch",
     "preview:typedoc": "npx serve docs",
     "test": "npm run vitest",
-    "vitest": "vitest"
+    "vitest": "vitest",
+    "verify:pack": "node scripts/verify-pack.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
@@ -96,6 +121,7 @@
     "web-ifc": "^0.0.72"
   },
   "peerDependencies": {
+    "@react-three/drei": ">=9.0.0",
     "@react-three/fiber": ">=8.13",
     "mapbox-gl": ">=3.5.0",
     "maplibre-gl": ">=4.0.0",

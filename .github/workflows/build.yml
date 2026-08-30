@@ -19,3 +19,5 @@ jobs:
       - run: npm ci
       - run: npm run ts:check
       - run: npm run build
+      # every published entry point must actually resolve from a real install
+      - run: npm run verify:pack

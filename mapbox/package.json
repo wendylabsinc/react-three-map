@@ -1,0 +1,7 @@
+{
+  "internal": true,
+  "main": "../dist/cjs/main.js",
+  "module": "../dist/es/main.mjs",
+  "types": "../dist/types/mapbox.index.d.ts",
+  "sideEffects": false
+}
