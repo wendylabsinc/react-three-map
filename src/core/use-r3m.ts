@@ -1,7 +1,8 @@
 import { _roots, useThree } from "@react-three/fiber";
 import { useEffect } from "react";
-import { Matrix4, Matrix4Tuple } from "three";
+import { Matrix4Tuple } from "three";
 import { FromLngLat, MapInstance } from "./generic-map";
+import { createProjectionState, ProjectionState } from "./projection";
 
 // Use the store type from @react-three/fiber's internal _roots to avoid zustand version mismatch
 type FiberStore = NonNullable<ReturnType<typeof _roots.get>>['store'];
@@ -9,8 +10,10 @@ type FiberStore = NonNullable<ReturnType<typeof _roots.get>>['store'];
 export interface R3M<T extends MapInstance = MapInstance> {
   /** Map provider */
   map: T,
-  /** view projection matrix coming from the map provider */
+  /** Mercator view projection matrix coming from the map provider */
   viewProjMx: Matrix4Tuple,
+  /** how the map projects the world this frame, including the globe */
+  projection: ProjectionState,
   fromLngLat: FromLngLat,
 }
 
@@ -38,8 +41,8 @@ export function initR3M<T extends MapInstance>({store, ...props}: {
   fromLngLat: FromLngLat;
   store: FiberStore;
 }) {
-  const viewProjMx = new Matrix4().identity().toArray();
-  const r3m : R3M<T> = { ...props, viewProjMx };
+  const projection = createProjectionState();
+  const r3m : R3M<T> = { ...props, viewProjMx: projection.mercatorMatrix, projection };
   store.setState({r3m} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
   return r3m;
 }

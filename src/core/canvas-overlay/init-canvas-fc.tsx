@@ -1,13 +1,12 @@
 import { memo, useEffect, useState } from "react";
 import { createPortal } from 'react-dom';
-import { Matrix4Tuple } from "three";
 import { CanvasProps } from "../../api/canvas-props";
 import { FromLngLat, MapInstance } from "../generic-map";
 import { CanvasPortal } from "./canvas-portal";
 
 interface InitCanvasFCProps extends CanvasProps {
   map: MapInstance,
-  setOnRender: (callback: () => (mx: Matrix4Tuple) => void) => void,
+  setOnRender: (callback: () => (...args: unknown[]) => void) => void,
   frameloop?: 'always' | 'demand',
   fromLngLat: FromLngLat,
 }

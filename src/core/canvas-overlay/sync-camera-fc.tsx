@@ -1,15 +1,17 @@
 import { useFrame, useThree } from "@react-three/fiber";
-import { memo, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { Matrix4Tuple, PerspectiveCamera } from "three";
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Matrix4, PerspectiveCamera } from "three";
 import { Coords } from "../../api/coords";
 import { FromLngLat, MapInstance } from "../generic-map";
+import { projectionViewModel, readRenderArgs } from "../projection";
 import { syncCamera } from "../sync-camera";
 import { useCoordsToMatrix } from "../use-coords-to-matrix";
 import { useFunction } from "../use-function";
 import { useR3M } from "../use-r3m";
+import { GlobeOccluder } from "./globe-occluder";
 
 interface SyncCameraFCProps extends Coords {
-  setOnRender?: (callback: () => (mx: Matrix4Tuple) => void) => void,
+  setOnRender?: (callback: () => (...args: unknown[]) => void) => void,
   /** on `useFrame` it will manually render (used by `<Coordinates>`) */
   manualRender?: boolean,
   onReady?: () => void,
@@ -43,6 +45,11 @@ export const SyncCameraFC = memo<SyncCameraFCProps>(({
     fromLngLat: r3m?.fromLngLat ?? fromLngLat,
   });
 
+  const coords = useMemo(() => ({ latitude, longitude, altitude }), [latitude, longitude, altitude]);
+  const [projByView] = useState(() => new Matrix4());
+  const [globeOccluder] = useState(() => new GlobeOccluder());
+  useEffect(() => () => globeOccluder.dispose(), [globeOccluder]);
+
   const ready = useRef(false);
 
   const triggerRepaint = useMemo(() => map.triggerRepaint, [map]);
@@ -53,7 +60,10 @@ export const SyncCameraFC = memo<SyncCameraFCProps>(({
 
   useFrame(() => {
     if (!r3m) return;
-    syncCamera(camera, origin, r3m.viewProjMx)
+    syncCamera(camera, projectionViewModel(r3m.projection, origin, coords, projByView));
+
+    // this canvas has no access to the map depth, hide what is behind the globe ourselves
+    if (r3m.projection.globeness > 0) globeOccluder.render(gl, camera, altitude);
 
     if (manualRender) gl.render(scene, camera);
 
@@ -64,7 +74,7 @@ export const SyncCameraFC = memo<SyncCameraFCProps>(({
     }
   }, -Infinity)
 
-  const onRender = useFunction((viewProjMx: Matrix4Tuple | {defaultProjectionData: {mainMatrix: Record<string, number>}}) => {
+  const onRender = useFunction((...args: unknown[]) => {
     if (!r3m) return;
     map.triggerRepaint = triggerRepaintOff;
 
@@ -78,8 +88,7 @@ export const SyncCameraFC = memo<SyncCameraFCProps>(({
       );
     }
 
-    const pVMx = 'defaultProjectionData' in viewProjMx ? Object.values(viewProjMx.defaultProjectionData.mainMatrix) : viewProjMx;
-    r3m.viewProjMx = pVMx as Matrix4Tuple;
+    readRenderArgs(r3m.projection, args, map);
     if (!ready.current && onReady) {
       ready.current = true;
       onReady();

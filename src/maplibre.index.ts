@@ -41,6 +41,10 @@ export { Compass3D } from './components/compass-3d';
 export type { Compass3DProps } from './components/compass-3d';
 export { CompassOverlay } from './maplibre/compass-overlay';
 export type { CompassOverlayProps } from './maplibre/compass-overlay';
+export { UndergroundCamera } from './maplibre/underground-camera';
+export type { UndergroundCameraProps } from './maplibre/underground-camera';
+export { allowUndergroundCamera } from './maplibre/allow-underground-camera';
+export type { UndergroundCameraOptions } from './maplibre/allow-underground-camera';
 
 /**
  * Hook to access the MapLibre GL JS map instance from within a Canvas.

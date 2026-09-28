@@ -7,8 +7,10 @@ export interface LayerProps {
 	renderingMode: '3d';
 	onRemove?(map: MapInstance, gl: WebGLRenderingContext): void;
 	onAdd?(map: MapInstance, gl: WebGLRenderingContext): void;
-	prerender?(gl: WebGLRenderingContext, matrix: number[]): void;
-	render(gl: WebGLRenderingContext, matrix: number[]): void;
+	/** the arguments after `gl` depend on the map provider and its version */
+	prerender?(gl: WebGLRenderingContext, ...args: unknown[]): void;
+	/** the arguments after `gl` depend on the map provider and its version */
+	render(gl: WebGLRenderingContext, ...args: unknown[]): void;
 }
 
 /** Generic interface of Mapbox/Maplibre `LngLatLike` */

@@ -1,6 +1,7 @@
 import { MathUtils, Vector3Tuple } from "three";
 import { Coords } from "./coords";
 import { earthRadius } from "../core/earth-radius";
+import { mercatorNorthing } from "./coords-to-vector-3";
 
 /**
  * Converts a 3D position vector back to geographic coordinates.
@@ -17,9 +18,8 @@ import { earthRadius } from "../core/earth-radius";
  * @returns Geographic coordinates (latitude, longitude, altitude)
  *
  * @remarks
- * This function provides reasonable accuracy at city-level distances.
- * At country-level distances, the precision decreases due to Mercator projection
- * distortion not being fully accounted for in the reverse calculation.
+ * It is the exact inverse of {@link coordsToVector3}: converting coordinates to a position and back
+ * returns the same coordinates, at any distance from the origin.
  *
  * @example
  * ```ts
@@ -43,8 +43,11 @@ import { earthRadius } from "../core/earth-radius";
  */
 export function vector3ToCoords(position: Vector3Tuple, origin: Coords): Coords {
   const [x, y, z] = position;
-  const latitude = origin.latitude + (-z / earthRadius) * MathUtils.RAD2DEG;
-  const longitude = origin.longitude + (x / earthRadius) * MathUtils.RAD2DEG / Math.cos(origin.latitude * MathUtils.DEG2RAD);
+  // meters per radian at the origin latitude
+  const metersPerRadian = earthRadius * Math.cos(origin.latitude * MathUtils.DEG2RAD);
+  const northing = mercatorNorthing(origin.latitude) - z / metersPerRadian;
+  const latitude = (2 * Math.atan(Math.exp(northing)) - Math.PI / 2) * MathUtils.RAD2DEG;
+  const longitude = origin.longitude + (x / metersPerRadian) * MathUtils.RAD2DEG;
   const altitude = (origin.altitude || 0) + y;
   const coords: Coords = { latitude, longitude, altitude };
   return coords;

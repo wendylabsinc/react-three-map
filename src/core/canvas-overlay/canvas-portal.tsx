@@ -1,6 +1,5 @@
 import { Canvas } from "@react-three/fiber";
 import { memo, useState } from "react";
-import { Matrix4Tuple } from "three";
 import { CanvasProps } from "../../api/canvas-props";
 import { events } from "../events";
 import { FromLngLat, MapInstance } from "../generic-map";
@@ -9,7 +8,7 @@ import { InitR3M } from "./init-r3m";
 import { SyncCameraFC } from "./sync-camera-fc";
 
 interface CanvasPortalProps extends CanvasProps {
-  setOnRender: (callback: () => (mx: Matrix4Tuple) => void) => void,
+  setOnRender: (callback: () => (...args: unknown[]) => void) => void,
   map: MapInstance,
   fromLngLat: FromLngLat,
 }

@@ -343,7 +343,7 @@ const Context = createContext<ContextProps>({
   arrowHeadLength: 0.2,
   enabled: true,
   anyDragging: false,
-  setAnyDragging: () => {}
+  setAnyDragging: () => undefined
 })
 
 const _quaternion = new Quaternion()
