@@ -1,6 +1,6 @@
 {
   "name": "@wendylabsinc/react-three-map",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "description": "React Three Fiber integration for MapLibre GL JS and Mapbox GL JS",
   "keywords": [
     "react",
