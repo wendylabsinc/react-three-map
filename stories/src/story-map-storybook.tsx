@@ -5,8 +5,8 @@ import MapboxGl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FC, PropsWithChildren, ReactElement, ReactNode, cloneElement, isValidElement } from "react";
-import MapboxMap from 'react-map-gl/mapbox';
-import MaplibreMap from 'react-map-gl/maplibre';
+import MapboxMap, { MapProps as MapboxMapProps } from 'react-map-gl/mapbox';
+import MaplibreMap, { MapProps as MaplibreMapProps } from 'react-map-gl/maplibre';
 import { Canvas as MapboxCanvas, CanvasProps } from '@wendylabsinc/react-three-map/mapbox';
 import { Canvas as MaplibreCanvas } from '@wendylabsinc/react-three-map/maplibre';
 
@@ -29,6 +29,12 @@ export interface StoryMapProps extends PropsWithChildren {
   maplibreStyle?: any,
   mapboxStyle?: any,
   mapStyleUrl?: string, // Added for backward compatibility
+  /** `globe` needs MapLibre >= 5 or Mapbox >= 3 */
+  projection?: 'mercator' | 'globe',
+  /** extra props for the MapLibre `<Map>` */
+  maplibreProps?: Partial<MaplibreMapProps>,
+  /** extra props for the Mapbox `<Map>` */
+  mapboxProps?: Partial<MapboxMapProps>,
 }
 
 /** `<Map>` styled for stories */
@@ -46,7 +52,10 @@ export const StoryMap: FC<StoryMapProps> = (props) => {
     maplibreChildren,
     maplibreStyle,
     mapboxStyle = 'mapbox://styles/mapbox/dark-v11',
-    mapStyleUrl // For backward compatibility
+    mapStyleUrl, // For backward compatibility
+    projection,
+    maplibreProps,
+    mapboxProps,
   } = props;
   
   // Use mapStyleUrl as fallback for maplibreStyle if provided
@@ -77,8 +86,8 @@ export const StoryMap: FC<StoryMapProps> = (props) => {
     ? cloneElement(children as ReactElement<{ overlay?: boolean }>, { overlay })
     : children;
   
-  // Set Mapbox token
-  const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWJhbGV4OTkiLCJhIjoiY2o1cGttZTJjMGJ5NDMycHFwY2h0amZieSJ9.fHqdZDfrCz6dEYTdnQ-hjQ';
+  // Set Mapbox token, Storybook's config (`.storybook/main.ts`) provides the default
+  const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN;
   MapboxGl.accessToken = mapboxToken;
 
   return <div style={{ height: '100vh', position: 'relative' }}>
@@ -92,6 +101,8 @@ export const StoryMap: FC<StoryMapProps> = (props) => {
           bearing
         }}
         mapStyle={actualMaplibreStyle}
+        projection={projection}
+        {...maplibreProps}
       >
         <MaplibreCanvas latitude={latitude} longitude={longitude} {...canvasProps}>
           {childrenWithOverlay}
@@ -113,6 +124,8 @@ export const StoryMap: FC<StoryMapProps> = (props) => {
           bearing
         }}
         mapStyle={mapboxStyle}
+        projection={projection}
+        {...mapboxProps}
       >
         <MapboxCanvas latitude={latitude} longitude={longitude} {...canvasProps}>
           {childrenWithOverlay}

@@ -4,7 +4,6 @@ import { MercatorCoordinate } from "maplibre-gl";
 import { memo, useState } from "react";
 import { Layer, useMap } from "react-map-gl/maplibre";
 import * as THREE from "three";
-import { Matrix4Tuple } from "three";
 import { CanvasProps } from "../api/canvas-props";
 import { useCanvasInLayer } from "../core/canvas-in-layer/use-canvas-in-layer";
 import { InitCanvasFC } from "../core/canvas-overlay/init-canvas-fc";
@@ -87,11 +86,11 @@ const CanvasInLayer = memo<CanvasPropsAndMap>(({ map, ...props }) => {
 CanvasInLayer.displayName = 'CanvasInLayer';
 
 const CanvasOverlay = memo<CanvasPropsAndMap>(({ map, id, beforeId, ...props }) => {
-  const [onRender, setOnRender] = useState<(mx: Matrix4Tuple) => void>();
+  const [onRender, setOnRender] = useState<(...args: unknown[]) => void>();
 
-  const render = useFunction<Render>((_gl, mx) => {
+  const render = useFunction<Render>((_gl, ...args) => {
     if (!onRender) return;
-    onRender(mx as Matrix4Tuple);
+    onRender(...args);
   })
 
   return <>

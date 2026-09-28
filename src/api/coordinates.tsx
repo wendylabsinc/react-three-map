@@ -1,7 +1,9 @@
 import { createPortal, useFrame, useThree } from "@react-three/fiber";
-import { PropsWithChildren, memo, useLayoutEffect, useRef, useState } from "react";
-import { Matrix4Tuple, PerspectiveCamera, Scene } from "three";
+import { PropsWithChildren, memo, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Matrix4, Matrix4Tuple, PerspectiveCamera, Scene } from "three";
+import { projectionViewModel } from "../core/projection";
 import { syncCamera } from "../core/sync-camera";
+import { Coords } from "./coords";
 import { useCoordsToMatrix } from "../core/use-coords-to-matrix";
 import { R3M, useR3M } from "../core/use-r3m";
 
@@ -79,11 +81,12 @@ export const Coordinates = memo<CoordinatesProps>(({
     latitude, longitude, altitude, fromLngLat: r3m?.fromLngLat,
   });
 
+  const coords = useMemo(() => ({ latitude, longitude, altitude }), [latitude, longitude, altitude]);
 
   if (!r3m) return null;
 
   return <>{createPortal(<>
-    <RenderAtCoords r3m={r3m} origin={origin} />
+    <RenderAtCoords r3m={r3m} origin={origin} coords={coords} />
     {children}
   </>, scene, { events: { priority: 2 } })}</>
 })
@@ -92,18 +95,20 @@ Coordinates.displayName = 'Coordinates';
 
 interface RenderAtCoordsProps {
   r3m: R3M,
-  origin: Matrix4Tuple
+  origin: Matrix4Tuple,
+  coords: Coords,
 }
 
-function RenderAtCoords({ r3m, origin }: RenderAtCoordsProps) {
+function RenderAtCoords({ r3m, origin, coords }: RenderAtCoordsProps) {
 
   const { gl, scene, set } = useThree()
 
   const cameraRef = useRef<PerspectiveCamera>(null)
+  const [projByView] = useState(() => new Matrix4())
 
   useFrame(() => {
     if (!cameraRef.current) return;
-    syncCamera(cameraRef.current, origin, r3m.viewProjMx);
+    syncCamera(cameraRef.current, projectionViewModel(r3m.projection, origin, coords, projByView));
     gl.render(scene, cameraRef.current);
   })
 

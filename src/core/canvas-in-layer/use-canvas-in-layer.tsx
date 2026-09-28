@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { CanvasProps } from "../../api/canvas-props";
 import { FromLngLat, MapInstance } from "../generic-map";
 import { useCoordsToMatrix } from "../use-coords-to-matrix";
@@ -13,10 +14,12 @@ export function useCanvasInLayer(props: CanvasProps,fromLngLat: FromLngLat, map:
       latitude, longitude, altitude, fromLngLat,
     });
 
+    const coords = useMemo(() => ({ latitude, longitude, altitude }), [latitude, longitude, altitude]);
+
     const { onRemove, useThree, r3m } = useRoot(fromLngLat, map, props);
-  
-    const render = useRender({origin, frameloop, useThree, map, r3m});
-  
+
+    const render = useRender({origin, coords, frameloop, useThree, map, r3m});
+
     return {
       id: props.id,
       beforeId: props.beforeId,
