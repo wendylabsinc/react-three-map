@@ -27,6 +27,9 @@ Now with `@wendylabsinc/react-three-map`, you can use them together.
 
 ## New Features in this Fork
 
+- **3D Globe** - Objects stay anchored on the MapLibre and Mapbox globe, even while it blends into a flat map as you zoom in
+- **Underground Camera** - Take the MapLibre camera below the ground, to explore tunnels, pipes and other underground assets
+- **Exact Camera Sync** - The three.js camera matches the map camera, so lighting, drei helpers and postprocessing work as usual
 - **Custom Pivot Controls** - Enhanced interaction controls for 3D objects in map space
 - **Extensive GIS Utilities** - Professional-grade geospatial tools and calculations
 - **Advanced Coordinate Systems** - Extended support for various GIS coordinate projections
@@ -36,6 +39,8 @@ Now with `@wendylabsinc/react-three-map`, you can use them together.
 ```sh
 npm install @wendylabsinc/react-three-map
 ```
+
+It needs `react` >= 18, `three`, `@react-three/fiber` >= 8.13, `@react-three/drei`, `react-map-gl` >= 8, and either `maplibre-gl` >= 4 (>= 5 for the globe and the underground camera) or `mapbox-gl` >= 3.5.
 
 - [React Three Map](#react-three-map)
   - [Examples](#examples)
