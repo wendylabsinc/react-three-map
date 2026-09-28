@@ -287,7 +287,7 @@ export function isPointInGeoTriangles(
 export function isPointOnSurface(
   point: Vector3Tuple,
   geometry: BufferGeometry,
-  tolerance: number = 0.001
+  tolerance = 0.001
 ): boolean {
   const testPoint = new Vector3(point[0], point[1], point[2]);
   const positionAttr = geometry.getAttribute("position");

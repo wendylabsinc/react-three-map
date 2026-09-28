@@ -45,6 +45,8 @@ npm install @wendylabsinc/react-three-map
     - [Canvas](#canvas)
       - [Render Props](#render-props)
       - [Render Props removed from `@react-three/fiber`](#render-props-removed-from-react-threefiber)
+      - [Camera](#camera)
+    - [Globe projection](#globe-projection)
     - [Coordinates](#coordinates)
     - [NearCoordinates](#nearcoordinates)
     - [useMap](#usemap)
@@ -58,11 +60,16 @@ npm install @wendylabsinc/react-three-map
     - [EnhancedPivotControls](#enhancedpivotcontrols)
     - [Compass3D](#compass3d)
     - [CompassOverlay](#compassoverlay)
+    - [UndergroundCamera](#undergroundcamera)
 
 
 ## Examples
 
-Check out our examples [here](https://wendylabsinc.github.io/react-three-map/storybook/) (powered by [Storybook](https://storybook.js.org/)).
+Check out our examples [here](https://wendylabsinc.github.io/react-three-map/storybook/) (powered by [Storybook](https://storybook.js.org/)), including:
+
+- [Globe](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/globe--globe): objects anchored on the MapLibre and Mapbox globe, through the zoom transition to Mercator.
+- [Underground](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/underground--underground): fly the camera below the streets of London, through (illustrative) tube tunnels.
+- [Volumetric Clouds](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/volumetric-clouds--default): ray marched cloud layers, tuned like a flight simulator weather panel, casting shadows on the map.
 
 For API documentation, see the [TypeDoc](https://wendylabsinc.github.io/react-three-map/docs/).
 
@@ -182,6 +189,31 @@ Therefore, the following `<Canvas>` props are ignored:
 - orthographic
 - dpr
 
+#### Camera
+
+The R3F camera follows the map camera exactly: `camera.position` is the map's eye, in meters from the `<Canvas>` origin, and `fov`, `aspect`, `near` and `far` match the map's projection. Anything that reads the camera works as usual: lighting, drei helpers such as `<Billboard>`, `<Html>` or `calculateScaleFactor`, and postprocessing effects that need the depth range.
+
+### Globe projection
+
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/globe--globe)
+
+`<Canvas>`, `<Coordinates>` and raycasting follow the map projection, including the globe of MapLibre >= 5 and Mapbox >= 3, and the way it blends into Mercator as you zoom in (MapLibre: zoom 11 to 12, Mapbox: zoom 5 to 6).
+
+```tsx
+<Map projection="globe" initialViewState={{ latitude: 51.5, longitude: -0.12, zoom: 2 }}>
+  <Canvas latitude={51.5} longitude={-0.12}>
+    <mesh position={[0, 400_000, 0]}>
+      <cylinderGeometry args={[50_000, 50_000, 800_000]} />
+      <meshStandardMaterial color="hotpink" />
+    </mesh>
+  </Canvas>
+</Map>
+```
+
+Objects on the far side of the planet are hidden, with or without `overlay`.
+
+`NearCoordinates` and `coordsToVector3` offset objects on the plane tangent to the `<Canvas>` origin. That's fine at city distances, but on a globe they float above the ground further away, use `<Coordinates>` there.
+
 ### Coordinates
 
 [![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/multi-coordinates--default)
@@ -238,7 +270,7 @@ const Component = () => {
 
 This utility function converts geographic coordinates into a `Vector3Tuple`, which represents a 3D vector in meters.
 
-Similar to `NearCoordinates`, remember that this only updates positions (translation) but that scale is not taken into account, which has an important factor at very long distances (country level).
+The position is exact in the map's Mercator projection, the same space `<Canvas>` renders in. Similar to `NearCoordinates`, remember that this only updates positions (translation) but that scale is not taken into account, which has an important factor at very long distances (country level).
 
 
 | Parameter        | Description                                                     |
@@ -254,9 +286,7 @@ Returns a `Vector3Tuple` representing the 3D position of the point relative to t
 
 This utility function converts a `Vector3Tuple`, which represents a 3D vector in meters, back into geographic coordinates.
 
-It is the inverse of `coordsToVector3` but it does not have a good level of precision at long distances since we haven't reverse engineered #102 fix yet.
-
-Recommended to use at city level distances, but margin errors will be noticeable at country level distances.
+It is the exact inverse of `coordsToVector3`: converting coordinates to a position and back returns the same coordinates, at any distance from the origin.
 
 | Parameter                | Description                                                     |
 | ------------------------ | --------------------------------------------------------------- |
@@ -534,6 +564,43 @@ function App() {
 | overlay | Controls visibility of the overlay | `true` |
 
 Use `CompassOverlay` when you want the compass in a separate rendering context from your main 3D scene, or when you need precise control over the overlay's position and size.
+
+### UndergroundCamera
+
+[![](https://img.shields.io/badge/-demo-%23ff69b4)](https://wendylabsinc.github.io/react-three-map/storybook/?path=/story/underground--underground)
+
+**MapLibre only.** Lets the camera go below the ground, to look up at the map from underneath or fly through tunnels, pipes and other underground assets.
+
+MapLibre >= 5 accepts a `maxPitch` of up to 180 degrees, but pushes the camera back above the ground (or terrain) whenever it would end up below it. `<UndergroundCamera />` lifts that constraint while it is mounted.
+
+```tsx
+import Map from "react-map-gl/maplibre";
+import { Canvas, UndergroundCamera } from "@wendylabsinc/react-three-map/maplibre";
+
+<Map
+  maxPitch={180}                 // pitch past 90° to look up from below
+  centerClampedToGround={false}  // orbit around points below the street, see `map.setCenterElevation()`
+  initialViewState={{ latitude: 51.5133, longitude: -0.0886, zoom: 17, pitch: 60 }}
+>
+  <UndergroundCamera minAltitude={-300} />
+  <Canvas latitude={51.5133} longitude={-0.0886}>
+    <Tunnels />
+  </Canvas>
+</Map>
+```
+
+| Prop        | Description                                                  | Default     |
+| ----------- | ------------------------------------------------------------ | ----------- |
+| enabled     | Set to `false` to keep the camera above the ground again      | `true`      |
+| minAltitude | Lowest altitude the camera can reach, in meters above sea level | `-Infinity` |
+
+Outside React, `allowUndergroundCamera(map, { minAltitude })` does the same and returns a function that restores the default.
+
+Notes:
+
+- The map draws nothing below its horizon, so give underground scenes a backdrop (see the story).
+- It replaces a private MapLibre method (`_elevateCameraIfInsideTerrain`); on versions without it, it warns and does nothing.
+- Mapbox caps the pitch at 85 degrees and keeps its camera above the terrain, so it can't go underground.
 
 ## Development
 
