@@ -6,6 +6,7 @@ import { FromLngLat, MapInstance } from "../generic-map";
 import { setCoords, useSetRootCoords } from "../use-coords";
 import { useFunction } from "../use-function";
 import { initR3M, R3M } from "../use-r3m";
+import { getCanvasPixelRatio } from "./canvas-pixel-ratio";
 
 // Use the store type from @react-three/fiber's internal _roots to avoid zustand version mismatch
 type FiberStore = NonNullable<ReturnType<typeof _roots.get>>['store'];
@@ -28,7 +29,7 @@ export function useRoot(
 
     const root = createRoot(canvas);
     root.configure({
-      dpr: window.devicePixelRatio,
+      dpr: getCanvasPixelRatio(canvas),
       events,
       ...props,
       frameloop: 'never',
@@ -77,7 +78,7 @@ export function useRoot(
 
     const { setDpr, setSize } = useThree.getState();
 
-    setDpr(window.devicePixelRatio);
+    setDpr(getCanvasPixelRatio(canvas));
 
     setSize(
       canvas.clientWidth,

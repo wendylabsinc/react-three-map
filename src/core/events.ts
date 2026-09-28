@@ -18,23 +18,28 @@ export const events: Events = (store) => {
     },
     compute: (event, state) => {
 
-      state.pointer.x = (event.offsetX / state.size.width) * 2 - 1;
-      state.pointer.y = 1 - (event.offsetY / state.size.height) * 2;
+      // events come from the map container, and markers, popups or `<Html>` inside it
+      // report `offsetX` relative to themselves, so measure against the canvas instead
+      const rect = state.gl.domElement.getBoundingClientRect();
+      const width = rect.width || state.size.width;
+      const height = rect.height || state.size.height;
+      state.pointer.x = ((event.clientX - rect.left) / width) * 2 - 1;
+      state.pointer.y = 1 - ((event.clientY - rect.top) / height) * 2;
 
       if (state.camera.userData.projByViewInv) {
         projViewInv.fromArray(state.camera.userData.projByViewInv);
-        
+
         // Custom raycasting for map projection
-        // Ray origin is the camera position (unprojected from NDC origin)
-        rayOrigin.set(0, 0, -1).applyMatrix4(projViewInv);
-        
-        // Ray passes through the pointer position on the far plane
+        // Ray starts at the pointer position on the near plane...
+        rayOrigin.set(state.pointer.x, state.pointer.y, -1).applyMatrix4(projViewInv);
+
+        // ...and passes through the pointer position on the far plane
         rayDirection
           .set(state.pointer.x, state.pointer.y, 1)
           .applyMatrix4(projViewInv)
           .sub(rayOrigin)
           .normalize();
-        
+
         state.raycaster.camera = state.camera;
         state.raycaster.ray.origin.copy(rayOrigin);
         state.raycaster.ray.direction.copy(rayDirection);
